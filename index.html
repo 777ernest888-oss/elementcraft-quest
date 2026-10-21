@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v14</title>
+<title>Элементкрафт v15</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
@@ -58,11 +58,18 @@ button { width:100%; padding:8px; margin:3px 0; background:#4ecca3; border:none;
   #craftHotbar { flex-wrap:wrap; overflow-x:visible; }
   .modal { width:420px; }
 }
+body.desk #game { max-width:1000px; flex-direction:row; align-items:stretch; }
+body.desk #fieldWrap { flex:1 1 auto; padding:12px; }
+body.desk #ui { width:340px; flex:0 0 340px; overflow-y:auto; padding:12px; display:flex; flex-direction:column; }
+body.desk #ui button { flex:0 0 auto; }
+body.desk #hotbar { flex-wrap:wrap; overflow-x:visible; }
+body.desk #craftHotbar { flex-wrap:wrap; overflow-x:visible; }
+body.desk .modal { width:420px; }
 </style>
 </head>
 <body>
 
-<div id="version">v14</div>
+<div id="version">v15 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -72,7 +79,7 @@ button { width:100%; padding:8px; margin:3px 0; background:#4ecca3; border:none;
   <div id="ui">
     <div id="msg"><b>Менделеев:</b> Тапай по цветным блокам!</div>
     <div id="hotbar"></div>
-    <button id="labBtn" onclick="openCraft()">🔬 ЛАБОРАТОРИЯ</button>
+    <button id="labBtn" onclick="openCraft()">ЛАБОРАТОРИЯ</button>
     <button onclick="resetGame()">🔄 ЗАНОВО</button>
   </div>
 </div>
@@ -101,7 +108,7 @@ button { width:100%; padding:8px; margin:3px 0; background:#4ecca3; border:none;
 
 <div class="overlay hidden" id="craftModal">
   <div class="modal">
-    <h2>🔬 ЛАБОРАТОРИЯ</h2>
+    <h2>ЛАБОРАТОРИЯ</h2>
     <p id="craftHint" style="color:#aaa; text-align:center;"></p>
     <div id="slots" style="display:flex; gap:10px; justify-content:center; margin:20px 0;"></div>
     <p style="font-size:13px; color:#aaa; text-align:center;">Нажми на элемент ниже, чтобы добавить в слот:</p>
@@ -187,23 +194,23 @@ var hintsOn = CFG.hints!=='0';
 const EL = {H:'#a5d8ff',O:'#d0ebff',C:'#495057',N:'#b197fc',Na:'#dee2e6',Cl:'#69db7c',Si:'#ffd43b',S:'#ffe066',Ca:'#f8f9fa',Fe:'#adb5bd',Cu:'#e8590c',Zn:'#74c0fc'};
 const META = {
 H:{e:'🎈',ru:'Водород',f:'Легче воздуха! Им летают шарики.'},
-O:{e:'🫧',ru:'Кислород',f:'Им мы дышим. Без него — никак!'},
+O:{e:'⭕',ru:'Кислород',f:'Им мы дышим. Без него — никак!'},
 C:{e:'💎',ru:'Углерод',f:'Уголь и алмазы — это всё он.'},
-N:{e:'🌬️',ru:'Азот',f:'Больше всего в воздухе — именно его.'},
-Na:{e:'🧂',ru:'Натрий',f:'Половинка поваренной соли.'},
+N:{e:'💨',ru:'Азот',f:'Больше всего в воздухе — именно его.'},
+Na:{e:'⚪',ru:'Натрий',f:'Половинка поваренной соли.'},
 Cl:{e:'🏊',ru:'Хлор',f:'Запах в бассейне — это он.'},
-Si:{e:'🏖️',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
+Si:{e:'⏳',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
 S:{e:'🔥',ru:'Сера',f:'В спичечных головках есть сера.'},
-Ca:{e:'🥛',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
-Fe:{e:'🧲',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
-Cu:{e:'🥉',ru:'Медь',f:'Из неё делают провода и монетки.'},
-Zn:{e:'🛡️',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
+Ca:{e:'🐚',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
+Fe:{e:'⚙',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
+Cu:{e:'🔌',ru:'Медь',f:'Из неё делают провода и монетки.'},
+Zn:{e:'🔩',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
 };
 const REC = [
   {i:['H','H','O'],r:'water',n:'Вода',emo:'💧',fact:'💧 Вода — основа жизни! Без неё не было бы ни тебя, ни меня, ни даже этой лаборатории!',type:'water'},
   {i:['H','H','O','O'],r:'fuel',n:'Топливо',emo:'🚀',fact:'🚀 Настоящие ракеты летают на жидком водороде и кислороде!',type:'fuel'},
-  {i:['Na','Cl'],r:'salt',n:'Соль',emo:'🧂',fact:'🧂 Натрий взрывается в воде, хлор — ядовитый газ. А вместе — вкусная соль!',type:'linear',atoms:['Na','Cl']},
-  {i:['Si','O','O'],r:'glass',n:'Стекло',emo:'🪟',fact:'✨ Стекло — это расплавленный песок. Окна и экраны — бывший песок!',type:'linear3',atoms:['O','Si','O']},
+  {i:['Na','Cl'],r:'salt',n:'Соль',emo:'⚪',fact:'⚪ Натрий взрывается в воде, хлор — ядовитый газ. А вместе — вкусная соль!',type:'linear',atoms:['Na','Cl']},
+  {i:['Si','O','O'],r:'glass',n:'Стекло',emo:'🍶',fact:'✨ Стекло — это расплавленный песок. Окна и экраны — бывший песок!',type:'linear3',atoms:['O','Si','O']},
   {i:['Cu','Zn'],r:'brass',n:'Латунь',emo:'🔔',fact:'🔩 Латунь крепче меди и цинка по отдельности. Так люди научились делать сплавы!',type:'linear',atoms:['Cu','Zn']}
 ];
 const PRAISE = ['Блестяще, коллега!','Точно по таблице!','Химия тебя любит!','Менделеев одобряет!','Нобелевка приближается!','Идеальная реакция!','Ты настоящий учёный!'];
@@ -349,7 +356,14 @@ function updateHint(){
   hp.classList.remove('hidden');
 }
 
+function applyLayout(){
+  var w=window.innerWidth;
+  document.getElementById('vw').textContent=w;
+  if(w>=900){ document.body.classList.add('desk'); } else { document.body.classList.remove('desk'); }
+}
+
 function fitCanvas(){
+  applyLayout();
   const wrap=document.getElementById('fieldWrap');
   const s=Math.max(140, Math.min(wrap.clientWidth, wrap.clientHeight, 640)-8);
   const dpr=window.devicePixelRatio||1;
@@ -369,7 +383,7 @@ function init(){
   document.getElementById('labTitle').textContent='Лаборатория '+CFG.name;
   document.getElementById('greetLine').textContent='Привет, '+CFG.name+'!';
   document.getElementById('finalLine').textContent='Миссия выполнена, '+CFG.name+'!';
-  document.title='Элементкрафт v14 — Лаборатория '+CFG.name;
+  document.title='Элементкрафт v15 — Лаборатория '+CFG.name;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
