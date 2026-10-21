@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v16</title>
+<title>Элементкрафт v17</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
@@ -69,7 +69,7 @@ body.desk .modal { width:420px; }
 </head>
 <body>
 
-<div id="version">v16 · <span id="vw">-</span>px</div>
+<div id="version">v17 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -84,7 +84,7 @@ body.desk .modal { width:420px; }
   </div>
 </div>
 
-<div id="hintPointer" class="hidden"></div>
+<div id="hintPointer" class="hidden">👇</div>
 <div id="rotateGuard">📱 Поверни телефон вертикально —<br>лаборатория так не работает!</div>
 
 <div class="overlay show" id="start">
@@ -148,7 +148,7 @@ body.desk .modal { width:420px; }
 
 <div class="overlay hidden" id="galleryModal">
   <div class="modal">
-    <h2>❓ КТО ЕСТЬ КТО</h2>
+    <h2> КТО ЕСТЬ КТО</h2>
     <div id="galleryBody"></div>
     <button onclick="closeGallery()">ЗАКРЫТЬ</button>
   </div>
@@ -156,7 +156,7 @@ body.desk .modal { width:420px; }
 
 <div class="overlay hidden" id="finalModal">
   <div class="modal" style="text-align:center;">
-    <h2 style="font-size:32px;"> ПОЕХАЛИ!</h2>
+    <h2 style="font-size:32px;">🚀 ПОЕХАЛИ!</h2>
     <p id="finalLine" style="font-size:20px; color:#4ecca3; font-weight:bold;">Миссия выполнена!</p>
     <p>Ты собрал все вещества и запустил ракету!</p>
     <div id="videoContainer"></div>
@@ -198,19 +198,19 @@ O:{e:'⭕',ru:'Кислород',f:'Им мы дышим. Без него — н
 C:{e:'💎',ru:'Углерод',f:'Уголь и алмазы — это всё он.'},
 N:{e:'💨',ru:'Азот',f:'Больше всего в воздухе — именно его.'},
 Na:{e:'⚪',ru:'Натрий',f:'Половинка поваренной соли.'},
-Cl:{e:'',ru:'Хлор',f:'Запах в бассейне — это он.'},
+Cl:{e:'🌊',ru:'Хлор',f:'Запах в бассейне — это он.'},
 Si:{e:'⏳',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
 S:{e:'🌟',ru:'Сера',f:'В спичечных головках есть сера.'},
 Ca:{e:'',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
 Fe:{e:'🧲',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
-Cu:{e:'🟠',ru:'Медь',f:'Из неё делают провода и монетки.'},
+Cu:{e:'',ru:'Медь',f:'Из неё делают провода и монетки.'},
 Zn:{e:'🔵',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
 };
 const REC = [
   {i:['H','H','O'],r:'water',n:'Вода',emo:'💧',fact:'💧 Вода — основа жизни! Без неё не было бы ни тебя, ни меня, ни даже этой лаборатории!',type:'water'},
   {i:['H','H','O','O'],r:'fuel',n:'Топливо',emo:'🚀',fact:'🚀 Настоящие ракеты летают на жидком водороде и кислороде!',type:'fuel'},
   {i:['Na','Cl'],r:'salt',n:'Соль',emo:'⚪',fact:'⚪ Натрий взрывается в воде, хлор — ядовитый газ. А вместе — вкусная соль!',type:'linear',atoms:['Na','Cl']},
-  {i:['Si','O','O'],r:'glass',n:'Стекло',emo:'',fact:'✨ Стекло — это расплавленный песок. Окна и экраны — бывший песок!',type:'linear3',atoms:['O','Si','O']},
+  {i:['Si','O','O'],r:'glass',n:'Стекло',emo:'🍶',fact:'✨ Стекло — это расплавленный песок. Окна и экраны — бывший песок!',type:'linear3',atoms:['O','Si','O']},
   {i:['Cu','Zn'],r:'brass',n:'Латунь',emo:'🔔',fact:'🔩 Латунь крепче меди и цинка по отдельности. Так люди научились делать сплавы!',type:'linear',atoms:['Cu','Zn']}
 ];
 const PRAISE = ['Блестяще, коллега!','Точно по таблице!','Химия тебя любит!','Менделеев одобряет!','Нобелевка приближается!','Идеальная реакция!','Ты настоящий учёный!'];
@@ -383,7 +383,7 @@ function init(){
   document.getElementById('labTitle').textContent='Лаборатория '+CFG.name;
   document.getElementById('greetLine').textContent='Привет, '+CFG.name+'!';
   document.getElementById('finalLine').textContent='Миссия выполнена, '+CFG.name+'!';
-  document.title='Элементкрафт v16 — Лаборатория '+CFG.name;
+  document.title='Элементкрафт v17 — Лаборатория '+CFG.name;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
@@ -629,7 +629,7 @@ function doCraft(){
     renderHot();
     if(mission>=REC.length){
       setTimeout(()=>{
-        document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
+        document.getElementById('msg').innerHTML='<b> Всё готово!</b> Нажми кнопку запуска ракеты!';
         if(!document.getElementById('rocketBtn')){
           const btn=document.createElement('button');
           btn.id='rocketBtn';
@@ -807,7 +807,7 @@ function updateMissionText(){
     const rec=REC[mission];
     document.getElementById('msg').innerHTML='<b>Менделеев:</b> Тапай по цветным блокам! Создай '+rec.n+' ('+rec.i.join(' + ')+')';
   } else {
-    document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
+    document.getElementById('msg').innerHTML='<b> Всё готово!</b> Нажми кнопку запуска ракеты!';
     const btn=document.createElement('button');
     btn.id='rocketBtn';
     btn.textContent='🚀 ЗАПУСТИТЬ РАКЕТУ';
