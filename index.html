@@ -1,0 +1,826 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Элементкрафт v14</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
+#game { width:100%; max-width:400px; margin:0 auto; display:flex; flex-direction:column; height:100vh; height:100dvh; }
+#fieldWrap { position:relative; flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; padding:4px; }
+canvas { display:block; background:#87CEEB; border:2px solid #000; }
+#ui { padding:6px; background:#16213e; flex-shrink:0; }
+#version { position:fixed; top:5px; right:5px; background:#e94560; color:#fff; padding:3px 8px; border-radius:4px; font-size:11px; z-index:999; }
+#helpBtn { position:fixed; top:5px; left:5px; background:#0f3460; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-size:13px; z-index:999; cursor:pointer; width:auto; margin:0; }
+button { width:100%; padding:8px; margin:3px 0; background:#4ecca3; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:15px; }
+#hotbar { display:flex; gap:4px; overflow-x:auto; min-height:35px; margin:4px 0; }
+.item { background:#0f3460; border:2px solid #4ecca3; border-radius:6px; padding:5px; min-width:40px; text-align:center; cursor:pointer; flex-shrink:0; }
+.overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:100; padding:16px; }
+.overlay.show { display:flex; }
+.modal { background:#16213e; border:2px solid #4ecca3; border-radius:12px; padding:20px; max-width:90%; width:350px; max-height:90%; overflow-y:auto; }
+.modal h2 { color:#4ecca3; text-align:center; margin-bottom:15px; }
+.modal p { margin-bottom:10px; line-height:1.5; font-size:15px; }
+.modal button { background:#4ecca3; color:#1a1a2e; }
+.hidden { display:none !important; }
+#craftHotbar { display:flex; gap:4px; overflow-x:auto; min-height:35px; margin:12px 0; padding:8px; background:#0f3460; border-radius:6px; }
+.success { animation:successPulse 0.6s ease-in-out; }
+@keyframes successPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+.star { position:fixed; font-size:30px; animation:fall 2s linear; z-index:200; pointer-events:none; }
+@keyframes fall { 0% { transform:translateY(-100px) rotate(0deg); opacity:1; } 100% { transform:translateY(100vh) rotate(720deg); opacity:0; } }
+.firework { position:fixed; width:6px; height:6px; border-radius:50%; animation:explode 1.5s ease-out forwards; z-index:300; pointer-events:none; }
+@keyframes explode { 0% { transform:scale(0); opacity:1; } 100% { transform:scale(20); opacity:0; } }
+.molecule { display:flex; align-items:center; justify-content:center; margin:20px 0; padding:20px; background:#0f3460; border-radius:12px; }
+.molecule svg { max-width:100%; }
+.confetti { position:fixed; width:10px; height:10px; top:-10px; animation:confettiFall 3s linear forwards; z-index:250; pointer-events:none; }
+@keyframes confettiFall { 0% { transform:translateY(0) rotate(0deg); opacity:1; } 100% { transform:translateY(100vh) rotate(720deg); opacity:0; } }
+.error-toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#e94560; color:#fff; padding:15px 25px; border-radius:8px; font-weight:bold; z-index:400; animation:slideIn 0.3s ease-out; max-width:90%; text-align:center; }
+@keyframes slideIn { 0% { transform:translateX(-50%) translateY(-100px); opacity:0; } 100% { transform:translateX(-50%) translateY(0); opacity:1; } }
+.flash { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.3); pointer-events:none; z-index:50; animation:flashAnim 0.2s ease-out; }
+@keyframes flashAnim { 0% { opacity:1; } 100% { opacity:0; } }
+#bigEmoji { font-size:64px; text-align:center; animation:popIn 0.5s ease-out; }
+@keyframes popIn { 0% { transform:scale(0); } 80% { transform:scale(1.2); } 100% { transform:scale(1); } }
+#hintPointer { position:fixed; font-size:30px; z-index:150; pointer-events:none; transform:translate(-50%,-100%); animation:hintBounce 0.8s infinite ease-in-out; }
+@keyframes hintBounce { 0%,100% { margin-top:0; } 50% { margin-top:8px; } }
+#rotateGuard { position:fixed; top:0; left:0; width:100%; height:100%; background:#1a1a2e; z-index:999; display:none; align-items:center; justify-content:center; text-align:center; padding:20px; font-size:18px; }
+@media (orientation:landscape) and (max-height:480px) and (max-width:899px) { #rotateGuard { display:flex; } }
+.elCard { background:#0f3460; border-radius:8px; padding:10px; margin-bottom:8px; font-size:14px; }
+@media (min-width:768px) and (max-width:899px) {
+  #game { max-width:640px; }
+  #fieldWrap { padding:10px; }
+}
+@media (min-width:900px) {
+  #game { max-width:1000px; flex-direction:row; align-items:stretch; }
+  #fieldWrap { flex:1 1 auto; padding:12px; }
+  #ui { width:340px; flex:0 0 340px; overflow-y:auto; padding:12px; display:flex; flex-direction:column; }
+  #ui button { flex:0 0 auto; }
+  #hotbar { flex-wrap:wrap; overflow-x:visible; }
+  #craftHotbar { flex-wrap:wrap; overflow-x:visible; }
+  .modal { width:420px; }
+}
+</style>
+</head>
+<body>
+
+<div id="version">v14</div>
+<button id="helpBtn" onclick="openGallery()">❓</button>
+
+<div id="game">
+  <div id="fieldWrap">
+    <canvas id="cvs" width="320" height="320"></canvas>
+  </div>
+  <div id="ui">
+    <div id="msg"><b>Менделеев:</b> Тапай по цветным блокам!</div>
+    <div id="hotbar"></div>
+    <button id="labBtn" onclick="openCraft()">🔬 ЛАБОРАТОРИЯ</button>
+    <button onclick="resetGame()">🔄 ЗАНОВО</button>
+  </div>
+</div>
+
+<div id="hintPointer" class="hidden">👇</div>
+<div id="rotateGuard">📱 Поверни телефон вертикально —<br>лаборатория так не работает!</div>
+
+<div class="overlay show" id="start">
+  <div class="modal">
+    <h2>ЭЛЕМЕНТКРАФТ</h2>
+    <p style="text-align:center"><b id="labTitle">Лаборатория</b></p>
+    <p style="text-align:center; color:#aaa; font-size:13px;">Уровень допуска: ЮНЫЙ АКАДЕМИК</p>
+    <p style="margin-top:16px;"><b id="greetLine">Привет!</b></p>
+    <p>Я — <b style="color:#4ecca3;">Дмитрий Менделеев</b>, создатель периодической таблицы химических элементов. Сегодня эта лаборатория становится твоей!</p>
+    <p><b>Что такое химические элементы?</b></p>
+    <p>Всё вокруг — воздух, вода, земля, даже ты сам — состоит из крошечных кубиков, которые называются <b style="color:#4ecca3;">химическими элементами</b>. Это как Lego, из которых собран весь мир!</p>
+    <p><b>Что делать в игре?</b></p>
+    <p>1. <b>Тапай</b> по цветным блокам с буквами — добывай элементы</p>
+    <p>2. <b>Открой лабораторию</b> и соедини элементы по формуле</p>
+    <p>3. <b>Создавай</b> настоящие вещества: воду, соль, стекло...</p>
+    <p>4. <b>Запусти ракету</b> в конце!</p>
+    <p style="color:#4ecca3; font-weight:bold; text-align:center; margin-top:16px;">Готов начать?</p>
+    <button onclick="startGame()">НАЧАТЬ МИССИЮ</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="craftModal">
+  <div class="modal">
+    <h2>🔬 ЛАБОРАТОРИЯ</h2>
+    <p id="craftHint" style="color:#aaa; text-align:center;"></p>
+    <div id="slots" style="display:flex; gap:10px; justify-content:center; margin:20px 0;"></div>
+    <p style="font-size:13px; color:#aaa; text-align:center;">Нажми на элемент ниже, чтобы добавить в слот:</p>
+    <div id="craftHotbar"></div>
+    <button id="createBtn" onclick="doCraft()">СОЗДАТЬ</button>
+    <button onclick="clearSlots()" style="background:#ffa500; color:#000;">ОЧИСТИТЬ СЛОТЫ</button>
+    <button id="closeCraftBtn" onclick="closeCraft()" style="background:#0f3460; color:#fff;">Закрыть</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="successModal">
+  <div class="modal success">
+    <h2 style="font-size:30px;">🎉 ОТЛИЧНО!</h2>
+    <div id="bigEmoji"></div>
+    <p id="successText" style="font-size:20px; text-align:center; color:#4ecca3; font-weight:bold;"></p>
+    <div id="moleculeDisplay"></div>
+    <p id="successFact" style="text-align:center; font-size:16px;"></p>
+    <button onclick="closeSuccess()">ПРОДОЛЖИТЬ</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="praiseModal">
+  <div class="modal">
+    <h2>🎉 МОЛОДЕЦ!</h2>
+    <p style="text-align:center; font-size:17px;">У тебя отлично получается!<br>Первое вещество уже создано!<br>А дальше — попробуй сам 😉</p>
+    <button onclick="closePraise()">ВПЕРЁД!</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="infoModal">
+  <div class="modal">
+    <h2 id="infoTitle"></h2>
+    <p id="infoText" style="text-align:center; font-size:16px;"></p>
+    <button onclick="closeInfo()">ПОНЯТНО!</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="galleryModal">
+  <div class="modal">
+    <h2>❓ КТО ЕСТЬ КТО</h2>
+    <div id="galleryBody"></div>
+    <button onclick="closeGallery()">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="finalModal">
+  <div class="modal" style="text-align:center;">
+    <h2 style="font-size:32px;">🚀 ПОЕХАЛИ!</h2>
+    <p id="finalLine" style="font-size:20px; color:#4ecca3; font-weight:bold;">Миссия выполнена!</p>
+    <p>Ты собрал все вещества и запустил ракету!</p>
+    <div id="videoContainer"></div>
+    <button onclick="closeFinal()">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+<script>
+// ===== CFG: ПРОДАКШЕН-ДЕФОЛТЫ (всё из URL). У Кости в index.html: name:'Костя', videoUrl:'pozdravlenie.mp4' =====
+const CFG = { name:'', videoUrl:'', hints:'1' };
+
+function convertToEmbedUrl(u){
+  if(!u) return null;
+  if(/\.mp4($|\?)|\.webm($|\?)/.test(u)) return u;
+  if(u.includes('<iframe')) return u;
+  if(u.includes('youtube.com/embed/')||u.includes('rutube.ru/play/embed/')) return u;
+  var m=u.match(/youtu\.be\/([\w-]+)/)||u.match(/[?&]v=([\w-]+)/);
+  if(m) return 'https://www.youtube.com/embed/'+m[1];
+  m=u.match(/rutube\.ru\/video\/([\w-]+)/);
+  if(m) return 'https://rutube.ru/play/embed/'+m[1];
+  m=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if(m) return 'https://drive.google.com/file/d/'+m[1]+'/preview';
+  if(u.includes('vk.com/video_ext')) return u;
+  return null;
+}
+(function(){
+  var p=new URLSearchParams(location.search);
+  if(p.get('name')) CFG.name=p.get('name');
+  if(p.get('vid')){ var n=convertToEmbedUrl(p.get('vid')); CFG.videoUrl=n?n:''; }
+  if(p.get('hints')==='0') CFG.hints='0';
+  if(!CFG.name) CFG.name='Друг';
+})();
+var hintsOn = CFG.hints!=='0';
+
+const EL = {H:'#a5d8ff',O:'#d0ebff',C:'#495057',N:'#b197fc',Na:'#dee2e6',Cl:'#69db7c',Si:'#ffd43b',S:'#ffe066',Ca:'#f8f9fa',Fe:'#adb5bd',Cu:'#e8590c',Zn:'#74c0fc'};
+const META = {
+H:{e:'🎈',ru:'Водород',f:'Легче воздуха! Им летают шарики.'},
+O:{e:'🫧',ru:'Кислород',f:'Им мы дышим. Без него — никак!'},
+C:{e:'💎',ru:'Углерод',f:'Уголь и алмазы — это всё он.'},
+N:{e:'🌬️',ru:'Азот',f:'Больше всего в воздухе — именно его.'},
+Na:{e:'🧂',ru:'Натрий',f:'Половинка поваренной соли.'},
+Cl:{e:'🏊',ru:'Хлор',f:'Запах в бассейне — это он.'},
+Si:{e:'🏖️',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
+S:{e:'🔥',ru:'Сера',f:'В спичечных головках есть сера.'},
+Ca:{e:'🥛',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
+Fe:{e:'🧲',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
+Cu:{e:'🥉',ru:'Медь',f:'Из неё делают провода и монетки.'},
+Zn:{e:'🛡️',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
+};
+const REC = [
+  {i:['H','H','O'],r:'water',n:'Вода',emo:'💧',fact:'💧 Вода — основа жизни! Без неё не было бы ни тебя, ни меня, ни даже этой лаборатории!',type:'water'},
+  {i:['H','H','O','O'],r:'fuel',n:'Топливо',emo:'🚀',fact:'🚀 Настоящие ракеты летают на жидком водороде и кислороде!',type:'fuel'},
+  {i:['Na','Cl'],r:'salt',n:'Соль',emo:'🧂',fact:'🧂 Натрий взрывается в воде, хлор — ядовитый газ. А вместе — вкусная соль!',type:'linear',atoms:['Na','Cl']},
+  {i:['Si','O','O'],r:'glass',n:'Стекло',emo:'🪟',fact:'✨ Стекло — это расплавленный песок. Окна и экраны — бывший песок!',type:'linear3',atoms:['O','Si','O']},
+  {i:['Cu','Zn'],r:'brass',n:'Латунь',emo:'🔔',fact:'🔩 Латунь крепче меди и цинка по отдельности. Так люди научились делать сплавы!',type:'linear',atoms:['Cu','Zn']}
+];
+const PRAISE = ['Блестяще, коллега!','Точно по таблице!','Химия тебя любит!','Менделеев одобряет!','Нобелевка приближается!','Идеальная реакция!','Ты настоящий учёный!'];
+const FONT = 'Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
+
+let world=[], inv={}, mission=0, slots=[null,null,null,null,null], pendingPraise=false, praiseDone=false;
+const cvs=document.getElementById('cvs'), ctx=cvs.getContext('2d');
+const ROWS=8, COLS=8;
+const TILE=40;
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function createFreshWorld(missionNum){
+  world=[];
+  for(let y=0;y<ROWS;y++){
+    world[y]=[];
+    for(let x=0;x<COLS;x++){
+      world[y][x]=null;
+    }
+  }
+  if(missionNum>=REC.length) return;
+  const needed=[...REC[missionNum].i];
+  shuffle(needed);
+  const positions=[];
+  for(let y=0;y<ROWS;y++){
+    for(let x=0;x<COLS;x++){
+      positions.push({y,x});
+    }
+  }
+  shuffle(positions);
+  for(let i=0;i<needed.length;i++){
+    world[positions[i].y][positions[i].x]=needed[i];
+  }
+  for(let y=0;y<ROWS;y++){
+    for(let x=0;x<COLS;x++){
+      if(!world[y][x]){
+        world[y][x]=Object.keys(EL)[Math.floor(Math.random()*12)];
+      }
+    }
+  }
+}
+
+function ensureMissionElements(){
+  if(mission>=REC.length) return;
+  const rec=REC[mission];
+  const needed={};
+  for(let el of rec.i) needed[el]=(needed[el]||0)+1;
+  for(let sym in needed){
+    let onField=0;
+    for(let y=0;y<ROWS;y++){
+      for(let x=0;x<COLS;x++){
+        if(world[y][x]===sym) onField++;
+      }
+    }
+    const inInv=inv[sym]||0;
+    const missing=needed[sym]-(onField+inInv);
+    if(missing<=0) continue;
+    let added=0, guard=0;
+    while(added<missing && guard<3000){
+      guard++;
+      const x=Math.floor(Math.random()*COLS);
+      const y=Math.floor(Math.random()*ROWS);
+      if(!world[y][x]){
+        world[y][x]=sym;
+        added++;
+      }
+    }
+    guard=0;
+    while(added<missing && guard<3000){
+      guard++;
+      const x=Math.floor(Math.random()*COLS);
+      const y=Math.floor(Math.random()*ROWS);
+      const cur=world[y][x];
+      if(cur && cur!==sym && !needed[cur]){
+        world[y][x]=sym;
+        added++;
+      }
+    }
+  }
+}
+
+function getHintTarget(){
+  if(!(hintsOn && mission===0 && !praiseDone)) return null;
+  const labOpen=!document.getElementById('craftModal').classList.contains('hidden');
+  const need={};
+  for(const s of REC[0].i) need[s]=(need[s]||0)+1;
+  if(!labOpen){
+    for(const s of Object.keys(need)){
+      const rem=need[s]-(inv[s]||0);
+      if(rem<=0) continue;
+      for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+        if(world[y][x]===s) return {type:'field',x:x,y:y};
+      }
+    }
+    return {type:'lab'};
+  }
+  const inSlots={};
+  for(const s of slots){ if(s) inSlots[s]=(inSlots[s]||0)+1; }
+  for(const s of Object.keys(need)){
+    if((inSlots[s]||0)<need[s]){
+      if((inv[s]||0)>0) return {type:'craft',sym:s};
+      return {type:'close'};
+    }
+  }
+  return {type:'create'};
+}
+
+function updateHint(){
+  const hp=document.getElementById('hintPointer');
+  const mods=['start','successModal','praiseModal','infoModal','galleryModal','finalModal'];
+  for(const id of mods){
+    if(!document.getElementById(id).classList.contains('hidden')){ hp.classList.add('hidden'); return; }
+  }
+  const t=getHintTarget();
+  if(!t){ hp.classList.add('hidden'); return; }
+  if(t.type==='field'){
+    const cr=cvs.getBoundingClientRect();
+    if(cr.width===0){ hp.classList.add('hidden'); return; }
+    hp.style.left=(cr.left+(t.x+0.5)*cr.width/COLS)+'px';
+    hp.style.top=(cr.top+t.y*cr.height/ROWS)+'px';
+    hp.classList.remove('hidden');
+    return;
+  }
+  let el=null;
+  if(t.type==='lab') el=document.getElementById('labBtn');
+  if(t.type==='create') el=document.getElementById('createBtn');
+  if(t.type==='close') el=document.getElementById('closeCraftBtn');
+  if(t.type==='craft'){
+    const items=document.querySelectorAll('#craftHotbar .item');
+    for(const it of items){ if(it.dataset.sym===t.sym){ el=it; break; } }
+    if(el) el.scrollIntoView({block:'nearest',inline:'center'});
+  }
+  if(!el){ hp.classList.add('hidden'); return; }
+  const r=el.getBoundingClientRect();
+  hp.style.left=(r.left+r.width/2)+'px';
+  hp.style.top=r.top+'px';
+  hp.classList.remove('hidden');
+}
+
+function fitCanvas(){
+  const wrap=document.getElementById('fieldWrap');
+  const s=Math.max(140, Math.min(wrap.clientWidth, wrap.clientHeight, 640)-8);
+  const dpr=window.devicePixelRatio||1;
+  cvs.style.width=s+'px';
+  cvs.style.height=s+'px';
+  cvs.width=Math.round(s*dpr);
+  cvs.height=Math.round(s*dpr);
+  draw();
+}
+
+function init(){
+  slots=[null,null,null,null,null];
+  inv={};
+  mission=0;
+  pendingPraise=false;
+  praiseDone=false;
+  document.getElementById('labTitle').textContent='Лаборатория '+CFG.name;
+  document.getElementById('greetLine').textContent='Привет, '+CFG.name+'!';
+  document.getElementById('finalLine').textContent='Миссия выполнена, '+CFG.name+'!';
+  document.title='Элементкрафт v14 — Лаборатория '+CFG.name;
+  createFreshWorld(0);
+  ensureMissionElements();
+  renderHot();
+  updateMissionText();
+  fitCanvas();
+}
+
+function draw(){
+  const k=cvs.width/320;
+  ctx.setTransform(k,0,0,k,0,0);
+  ctx.fillStyle='#87CEEB'; ctx.fillRect(0,0,320,320);
+  const ht=getHintTarget();
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+    ctx.fillStyle='#8d6e63'; ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+    ctx.strokeStyle='#000'; ctx.lineWidth=1; ctx.strokeRect(x*TILE,y*TILE,TILE,TILE);
+    if(world[y][x]){
+      ctx.fillStyle=EL[world[y][x]];
+      ctx.fillRect(x*TILE+2,y*TILE+2,TILE-4,TILE-4);
+      ctx.fillStyle='#000';
+      ctx.font='bold 16px '+FONT;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(world[y][x],x*TILE+TILE/2,y*TILE+14);
+      ctx.font='13px '+FONT;
+      ctx.fillText(META[world[y][x]].e,x*TILE+TILE/2,y*TILE+29);
+    }
+  }
+  if(ht && ht.type==='field'){
+    ctx.strokeStyle='#ffe066'; ctx.lineWidth=3;
+    ctx.strokeRect(ht.x*TILE+1,ht.y*TILE+1,TILE-2,TILE-2);
+  }
+  updateHint();
+}
+
+function handleTap(clientX, clientY){
+  const r=cvs.getBoundingClientRect();
+  const lx=(clientX-r.left)*320/r.width;
+  const ly=(clientY-r.top)*320/r.height;
+  const x=Math.floor(lx/TILE);
+  const y=Math.floor(ly/TILE);
+  if(y<0||y>=ROWS||x<0||x>=COLS) return;
+  if(world[y]&&world[y][x]){
+    inv[world[y][x]]=(inv[world[y][x]]||0)+1;
+    world[y][x]=null;
+    draw();
+    renderHot();
+  } else {
+    const flash=document.createElement('div');
+    flash.className='flash';
+    document.body.appendChild(flash);
+    setTimeout(()=>flash.remove(),200);
+  }
+}
+
+cvs.addEventListener('click', e=>handleTap(e.clientX, e.clientY));
+cvs.addEventListener('touchstart', e=>{
+  e.preventDefault();
+  const t=e.touches[0];
+  handleTap(t.clientX, t.clientY);
+}, {passive:false});
+
+function renderItems(containerId){
+  const h=document.getElementById(containerId);
+  h.innerHTML='';
+  for(let [k,v] of Object.entries(inv)){
+    if(v<=0) continue;
+    const d=document.createElement('div');
+    d.className='item';
+    d.dataset.sym=k;
+    d.innerHTML='<b style="color:'+EL[k]+'; font-size:18px;">'+k+'</b> '+META[k].e+'<br><small>'+v+'</small>';
+    h.appendChild(d);
+  }
+}
+
+function renderHot(){ renderItems('hotbar'); updateHint(); }
+function renderCraftHot(){ renderItems('craftHotbar'); updateHint(); }
+
+let lpTimer=null, lpSym=null, suppressClick=false;
+const hotbarEl=document.getElementById('hotbar');
+hotbarEl.addEventListener('pointerdown', function(e){
+  const it=e.target.closest('.item');
+  if(!it) return;
+  lpSym=it.dataset.sym;
+  lpTimer=setTimeout(function(){ suppressClick=true; showInfo(lpSym); },500);
+});
+['pointerup','pointerleave','pointercancel'].forEach(function(ev){
+  hotbarEl.addEventListener(ev, function(){ clearTimeout(lpTimer); });
+});
+hotbarEl.addEventListener('click', function(e){
+  if(suppressClick){ suppressClick=false; return; }
+  const item=e.target.closest('.item');
+  if(item && item.dataset.sym) returnToField(item.dataset.sym);
+});
+
+function returnToField(sym){
+  if(!inv[sym]||inv[sym]<=0) return;
+  const empties=[];
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+    if(!world[y][x]) empties.push({x:x,y:y});
+  }
+  if(!empties.length){ showError('На поле пока нет места — используй лабораторию!', '#ffa500'); return; }
+  const c=empties[Math.floor(Math.random()*empties.length)];
+  world[c.y][c.x]=sym;
+  inv[sym]--;
+  draw();
+  renderHot();
+}
+
+document.getElementById('craftHotbar').addEventListener('click', function(e){
+  const item=e.target.closest('.item');
+  if(item && item.dataset.sym) addSlot(item.dataset.sym);
+});
+
+document.getElementById('slots').addEventListener('click', function(e){
+  const item=e.target.closest('.item');
+  if(!item || item.dataset.idx===undefined) return;
+  const idx=parseInt(item.dataset.idx);
+  const sym=slots[idx];
+  if(sym){
+    inv[sym]++;
+    slots[idx]=null;
+    renderSlots();
+    renderHot();
+    renderCraftHot();
+  }
+});
+
+function showInfo(sym){
+  const m=META[sym];
+  document.getElementById('infoTitle').textContent=m.e+' '+sym+' — '+m.ru;
+  document.getElementById('infoText').textContent=m.f;
+  document.getElementById('infoModal').classList.remove('hidden');
+  document.getElementById('infoModal').classList.add('show');
+  updateHint();
+}
+function closeInfo(){
+  document.getElementById('infoModal').classList.add('hidden');
+  document.getElementById('infoModal').classList.remove('show');
+  updateHint();
+}
+function openGallery(){
+  let html='';
+  for(const k of Object.keys(META)){
+    html+='<div class="elCard"><b style="font-size:20px;">'+META[k].e+' '+k+'</b> — '+META[k].ru+'<br><small>'+META[k].f+'</small></div>';
+  }
+  document.getElementById('galleryBody').innerHTML=html;
+  document.getElementById('galleryModal').classList.remove('hidden');
+  document.getElementById('galleryModal').classList.add('show');
+  updateHint();
+}
+function closeGallery(){
+  document.getElementById('galleryModal').classList.add('hidden');
+  document.getElementById('galleryModal').classList.remove('show');
+  updateHint();
+}
+
+function addSlot(el){
+  if(inv[el]>0 && slots.includes(null)){
+    let i=slots.indexOf(null);
+    slots[i]=el;
+    inv[el]--;
+    renderHot();
+    renderCraftHot();
+    renderSlots();
+    updateHint();
+  }
+}
+
+function openCraft(){
+  slots.forEach(function(el){ if(el) inv[el]++; });
+  slots=[null,null,null,null,null];
+  ensureMissionElements();
+  draw();
+  document.getElementById('craftModal').classList.remove('hidden');
+  document.getElementById('craftModal').classList.add('show');
+  renderSlots();
+  renderCraftHot();
+  const rec=REC[mission];
+  if(rec) document.getElementById('craftHint').textContent='Задание: '+rec.n+' ('+rec.i.map(function(s){return META[s].e+s;}).join(' + ')+')';
+  updateHint();
+}
+
+function renderSlots(){
+  const s=document.getElementById('slots');
+  s.innerHTML='';
+  slots.forEach((el,i)=>{
+    const d=document.createElement('div');
+    d.className='item';
+    d.style.width='55px';
+    d.style.height='55px';
+    d.dataset.idx=i;
+    if(el){
+      d.innerHTML='<b style="color:'+EL[el]+'; font-size:22px;">'+el+'</b>';
+    }
+    s.appendChild(d);
+  });
+  updateHint();
+}
+
+function clearSlots(){
+  slots.forEach((el,i)=>{
+    if(el){ inv[el]++; slots[i]=null; }
+  });
+  renderSlots();
+  renderHot();
+  renderCraftHot();
+}
+
+function closeCraft(){
+  slots.forEach((el,i)=>{
+    if(el){ inv[el]++; slots[i]=null; }
+  });
+  renderHot();
+  document.getElementById('craftModal').classList.add('hidden');
+  document.getElementById('craftModal').classList.remove('show');
+  updateHint();
+}
+
+function doCraft(){
+  const sorted=slots.filter(s=>s).slice().sort();
+  if(sorted.length===0){
+    showError('Добавь элементы в слоты!', '#ffa500');
+    return;
+  }
+  const rec=REC[mission];
+  const recipeSorted=[...rec.i].sort();
+  const match=recipeSorted.length===sorted.length && recipeSorted.every((v,i)=>v===sorted[i]);
+  if(match){
+    slots=[null,null,null,null,null];
+    createStars();
+    const praise=PRAISE[Math.floor(Math.random()*PRAISE.length)];
+    document.getElementById('bigEmoji').textContent=rec.emo;
+    document.getElementById('successText').textContent=praise+' Создано: '+rec.n+'!';
+    document.getElementById('successFact').textContent=rec.fact;
+    drawMolecule(rec.type, rec.atoms);
+    document.getElementById('craftModal').classList.add('hidden');
+    document.getElementById('craftModal').classList.remove('show');
+    document.getElementById('successModal').classList.remove('hidden');
+    document.getElementById('successModal').classList.add('show');
+    mission++;
+    if(hintsOn && mission===1){ pendingPraise=true; praiseDone=true; }
+    ensureMissionElements();
+    draw();
+    renderHot();
+    if(mission>=REC.length){
+      setTimeout(()=>{
+        document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
+        if(!document.getElementById('rocketBtn')){
+          const btn=document.createElement('button');
+          btn.id='rocketBtn';
+          btn.textContent='🚀 ЗАПУСТИТЬ РАКЕТУ';
+          btn.style.background='#e94560';
+          btn.style.fontSize='20px';
+          btn.onclick=launchRocket;
+          document.getElementById('ui').appendChild(btn);
+        }
+        updateHint();
+      },1000);
+    } else {
+      const next=REC[mission];
+      setTimeout(()=>{
+        document.getElementById('msg').innerHTML='<b>Менделеев:</b> '+praise+' Теперь создай '+next.n+' ('+next.i.map(function(s){return META[s].e+s;}).join(' + ')+')';
+      },1000);
+    }
+  } else {
+    showError('❌ Неправильная комбинация! Смотри подсказку выше.', '#e94560');
+    clearSlots();
+  }
+}
+
+function drawMolecule(type, atoms){
+  const container=document.getElementById('moleculeDisplay');
+  container.innerHTML='';
+  if(type==='water'){
+    const svg=`<svg width="200" height="150" viewBox="0 0 200 150">
+      <line x1="60" y1="40" x2="100" y2="90" stroke="#fff" stroke-width="4"/>
+      <line x1="140" y1="40" x2="100" y2="90" stroke="#fff" stroke-width="4"/>
+      <circle cx="60" cy="40" r="25" fill="${EL.H}" stroke="#fff" stroke-width="3"/>
+      <circle cx="140" cy="40" r="25" fill="${EL.H}" stroke="#fff" stroke-width="3"/>
+      <circle cx="100" cy="90" r="25" fill="${EL.O}" stroke="#fff" stroke-width="3"/>
+      <text x="60" y="45" text-anchor="middle" fill="#000" font-size="20" font-weight="bold">H</text>
+      <text x="140" y="45" text-anchor="middle" fill="#000" font-size="20" font-weight="bold">H</text>
+      <text x="100" y="95" text-anchor="middle" fill="#000" font-size="20" font-weight="bold">O</text>
+      <text x="100" y="130" text-anchor="middle" fill="#4ecca3" font-size="14">Угол H-O-H ≈ 104.5°</text>
+    </svg>`;
+    container.innerHTML=`<div class="molecule">${svg}</div>`;
+  } else if(type==='fuel'){
+    const svg=`<svg width="250" height="100" viewBox="0 0 250 100">
+      <line x1="40" y1="50" x2="80" y2="50" stroke="#fff" stroke-width="4"/>
+      <circle cx="40" cy="50" r="20" fill="${EL.H}" stroke="#fff" stroke-width="3"/>
+      <circle cx="80" cy="50" r="20" fill="${EL.H}" stroke="#fff" stroke-width="3"/>
+      <text x="40" y="55" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">H</text>
+      <text x="80" y="55" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">H</text>
+      <text x="125" y="55" text-anchor="middle" fill="#fff" font-size="20">+</text>
+      <line x1="170" y1="50" x2="210" y2="50" stroke="#fff" stroke-width="4"/>
+      <circle cx="170" cy="50" r="20" fill="${EL.O}" stroke="#fff" stroke-width="3"/>
+      <circle cx="210" cy="50" r="20" fill="${EL.O}" stroke="#fff" stroke-width="3"/>
+      <text x="170" y="55" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">O</text>
+      <text x="210" y="55" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">O</text>
+    </svg>`;
+    container.innerHTML=`<div class="molecule">${svg}</div>`;
+  } else {
+    const a=atoms||['Na','Cl'];
+    const spacing=a.length===2?60:45;
+    const startX=a.length===2?60:50;
+    const svg=`<svg width="200" height="100" viewBox="0 0 200 100">
+      ${a.map((e,i)=>`
+        <circle cx="${startX+i*spacing}" cy="50" r="25" fill="${EL[e]}" stroke="#fff" stroke-width="3"/>
+        <text x="${startX+i*spacing}" y="55" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">${e}</text>
+        ${i<a.length-1?`<line x1="${startX+i*spacing+25}" y1="50" x2="${startX+(i+1)*spacing-25}" y2="50" stroke="#fff" stroke-width="4"/>`:''}
+      `).join('')}
+    </svg>`;
+    container.innerHTML=`<div class="molecule">${svg}</div>`;
+  }
+}
+
+function createStars(){
+  for(let i=0;i<15;i++){
+    const star=document.createElement('div');
+    star.className='star';
+    star.textContent=['⭐','🌟','✨','🎉'][Math.floor(Math.random()*4)];
+    star.style.left=Math.random()*100+'%';
+    star.style.animationDelay=Math.random()*0.5+'s';
+    document.body.appendChild(star);
+    setTimeout(()=>star.remove(),2500);
+  }
+}
+
+function createFireworks(){
+  document.querySelectorAll('.firework,.confetti').forEach(e=>e.remove());
+  const colors=['#ff0000','#00ff00','#0000ff','#ffff00','#ff00ff','#00ffff','#ffa500'];
+  for(let i=0;i<20;i++){
+    setTimeout(()=>{
+      const fw=document.createElement('div');
+      fw.className='firework';
+      fw.style.left=Math.random()*100+'%';
+      fw.style.top=Math.random()*50+'%';
+      fw.style.background=colors[Math.floor(Math.random()*colors.length)];
+      document.body.appendChild(fw);
+      setTimeout(()=>fw.remove(),1500);
+    },i*200);
+  }
+}
+
+function createConfetti(){
+  const colors=['#ff0000','#00ff00','#0000ff','#ffff00','#ff00ff','#00ffff'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'%';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=Math.random()*2+'s';
+    c.style.animationDuration=(2+Math.random()*2)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+function showError(msg, color='#e94560'){
+  document.querySelectorAll('.error-toast').forEach(e=>e.remove());
+  const toast=document.createElement('div');
+  toast.className='error-toast';
+  toast.style.background=color;
+  toast.textContent=msg;
+  document.body.appendChild(toast);
+  setTimeout(()=>{
+    toast.style.opacity='0';
+    toast.style.transition='opacity 0.3s';
+    setTimeout(()=>toast.remove(),300);
+  },2000);
+}
+
+function launchRocket(){
+  createFireworks();
+  createConfetti();
+  const vc=document.getElementById('videoContainer');
+  const v=CFG.videoUrl;
+  if(!v){
+    vc.innerHTML='<p style="color:#4ecca3;">🎬 Видео-поздравление будет здесь!</p>';
+  } else if(v.includes('<iframe')){
+    vc.innerHTML=v;
+  } else if(v.includes('embed')||v.includes('/preview')){
+    vc.innerHTML='<iframe src="'+v+'" width="100%" height="200" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+  } else {
+    vc.innerHTML='<video id="finalVideo" controls autoplay playsinline style="width:100%; border-radius:12px;"><source src="'+v+'" type="video/mp4">Ваш браузер не поддерживает видео.</video>';
+  }
+  document.getElementById('finalModal').classList.remove('hidden');
+  document.getElementById('finalModal').classList.add('show');
+}
+
+function closeFinal(){
+  document.getElementById('finalModal').classList.add('hidden');
+  document.getElementById('finalModal').classList.remove('show');
+}
+
+function startGame(){
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('start').classList.remove('show');
+  updateHint();
+}
+
+function closeSuccess(){
+  document.getElementById('successModal').classList.add('hidden');
+  document.getElementById('successModal').classList.remove('show');
+  if(pendingPraise){
+    pendingPraise=false;
+    document.getElementById('praiseModal').classList.remove('hidden');
+    document.getElementById('praiseModal').classList.add('show');
+  }
+  updateHint();
+}
+function closePraise(){
+  document.getElementById('praiseModal').classList.add('hidden');
+  document.getElementById('praiseModal').classList.remove('show');
+  updateHint();
+}
+
+function updateMissionText(){
+  const rocketBtn=document.getElementById('rocketBtn');
+  if(rocketBtn) rocketBtn.remove();
+  if(mission<REC.length){
+    const rec=REC[mission];
+    document.getElementById('msg').innerHTML='<b>Менделеев:</b> Тапай по цветным блокам! Создай '+rec.n+' ('+rec.i.map(function(s){return META[s].e+s;}).join(' + ')+')';
+  } else {
+    document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
+    const btn=document.createElement('button');
+    btn.id='rocketBtn';
+    btn.textContent='🚀 ЗАПУСТИТЬ РАКЕТУ';
+    btn.style.background='#e94560';
+    btn.style.fontSize='20px';
+    btn.onclick=launchRocket;
+    document.getElementById('ui').appendChild(btn);
+  }
+}
+
+function resetGame(){
+  if(!confirm('Начать игру заново? Весь прогресс будет потерян.')) return;
+  inv={};
+  mission=0;
+  slots=[null,null,null,null,null];
+  pendingPraise=false;
+  praiseDone=false;
+  createFreshWorld(0);
+  ensureMissionElements();
+  draw();
+  renderHot();
+  updateMissionText();
+}
+
+window.addEventListener('load', init);
+window.addEventListener('resize', fitCanvas);
+window.addEventListener('orientationchange', fitCanvas);
+</script>
+</body>
+</html>
