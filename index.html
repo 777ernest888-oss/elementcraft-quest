@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v21</title>
+<title>Элементкрафт v22</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
@@ -70,7 +70,7 @@ body.desk #hintPointer { font-size:46px; }
 </head>
 <body>
 
-<div id="version">v21 · <span id="vw">-</span>px</div>
+<div id="version">v22 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -101,7 +101,7 @@ body.desk #hintPointer { font-size:46px; }
     <p id="step1"></p>
     <p id="step2"></p>
     <p id="step3"></p>
-    <p>4. <b>Запусти ракету</b> в конце!</p>
+    <p id="step4"></p>
     <p style="color:#4ecca3; font-weight:bold; text-align:center; margin-top:12px;">Готов начать?</p>
     <button onclick="startGame()">НАЧАТЬ МИССИЮ</button>
   </div>
@@ -189,7 +189,7 @@ function convertToEmbedUrl(u){
   if(p.get('vid')){ var n=convertToEmbedUrl(p.get('vid')); CFG.videoUrl=n?n:''; }
   if(p.get('hints')==='0') CFG.hints='0';
   if(p.get('event')) CFG.event=p.get('event');
-  if(p.get('theme')==='space') CFG.theme='space';
+  if(p.get('theme')==='space'||p.get('theme')==='magic') CFG.theme=p.get('theme');
   if(!CFG.name) CFG.name='Друг';
 })();
 var hintsOn = CFG.hints!=='0';
@@ -246,6 +246,31 @@ const SPACE_PACK = {
   PRAISE:['Поехали!','Космос ближе, чем кажется!','Королёв одобряет!','Стыковка идеальная!','Ты рождён для космоса!','Орбита рассчитана верно!','Гагарин бы улыбнулся!']
 };
 
+// ===== ПАК «МАГИЯ» (подменяет дефолт только при ?theme=magic) =====
+const MAGIC_PACK = {
+  EL:{Ch:'#f3d9fa',Z:'#ffd43b',K:'#a5d8ff',L:'#d0ebff',R:'#63e6be',V:'#b197fc',Zv:'#dee2e6',S:'#ffe066',Kor:'#f08c00',Ser:'#adb5bd'},
+  META:{
+  Ch:{e:'✨',ru:'Чудо',f:'Волшебство начинается с чуда!'},
+  Z:{e:'⭐',ru:'Звёздная пыль',f:'Пыль падающих звёзд — самый редкий ингредиент!'},
+  K:{e:'💎',ru:'Кристалл',f:'Кристаллы хранят силу земли.'},
+  L:{e:'⭕',ru:'Лунный свет',f:'Лунный свет виден только ночью.'},
+  R:{e:'🌊',ru:'Роса',f:'Утренняя роса — слёзы травы.'},
+  V:{e:'💨',ru:'Вихрь',f:'Вихрь кружит и смешивает зелья.'},
+  Zv:{e:'🔔',ru:'Звон',f:'Звон колокольчика открывает волшебство.'},
+  S:{e:'☀',ru:'Солнечный луч',f:'Солнечный луч теплее любого огня.'},
+  Kor:{e:'👑',ru:'Корона',f:'Корона — символ настоящего волшебника.'},
+  Ser:{e:'⚪',ru:'Серебро',f:'Серебро блестит как луна.'}
+  },
+  REC:[
+  {i:['Ch','Ch','R'],r:'friendship',n:'Зелье Дружбы',emo:'⭐',fact:'⭐ Друзья — это чудо, которое всегда рядом!',type:'linear3',atoms:['Ch','R','Ch']},
+  {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:'⚪ Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
+  {i:['Z','Z','Ch'],r:'luck',n:'Зелье Удачи',emo:'☀',fact:'☀ Удача любит тех, кто верит в себя!',type:'linear3',atoms:['Z','Ch','Z']},
+  {i:['L','V'],r:'dreams',n:'Зелье Снов',emo:'⭕',fact:'⭕ Во снах мы видим то, что сердце хочет!',type:'linear',atoms:['L','V']},
+  {i:['Ch','Z','K','L'],r:'celebration',n:'Заклинание Праздника',emo:'✨',fact:'✨ Праздник начинается, когда ты готов волшебничать!',type:'fuel'}
+  ],
+  PRAISE:['Волшебно!','Магия работает!','Фея гордится тобой!','Заклинание удалось!','Ты настоящая волшебница!','Зелье получилось!','Чудо свершилось!']
+};
+
 const THEME_STR = {
   lab:{
     mentor:'Менделеев',
@@ -255,7 +280,8 @@ const THEME_STR = {
     step1:'1. <b>Тапай</b> по цветным блокам с буквами — добывай элементы',
     step2:'2. <b>Открой лабораторию</b> и соедини элементы по формуле',
     step3:'3. <b>Создавай</b> настоящие вещества: воду, соль, стекло...',
-    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleWord:'Лаборатория'
+    step4:'4. <b>Запусти ракету</b> в конце!',
+    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleWord:'Лаборатория', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ'
   },
   space:{
     mentor:'Королёв',
@@ -265,11 +291,24 @@ const THEME_STR = {
     step1:'1. <b>Тапай</b> по цветным блокам — добывай материалы',
     step2:'2. <b>Открой сборочный цех</b> и соедини материалы по схеме',
     step3:'3. <b>Создавай</b> настоящие вещи: воду, атмосферу, иллюминатор...',
-    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleWord:'Космодром'
+    step4:'4. <b>Запусти ракету</b> в конце!',
+    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleWord:'Космодром', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ'
+  },
+  magic:{
+    mentor:'Фея',
+    mentorLine:'Я — <b style="color:#4ecca3;">Фея</b>, хранительница волшебного котла. Сегодня этот котёл становится твоим!',
+    introQ:'Что такое магические ингредиенты?',
+    introA:'Волшебные зелья варят из особых ингредиентов: звёздной пыли, кристаллов, лунного света. Сегодня ты — <b style="color:#4ecca3;">юный волшебник</b>!',
+    step1:'1. <b>Тапай</b> по цветным блокам — собирай ингредиенты',
+    step2:'2. <b>Открой волшебный котёл</b> и соедини ингредиенты по рецепту',
+    step3:'3. <b>Создавай</b> настоящие зелья: дружбы, смелости, удачи...',
+    step4:'4. <b>Сотвори заклинание праздника</b> в конце!',
+    place:'ВОЛШЕБНЫЙ КОТЁЛ', placeLow:'волшебный котёл', rank:'ЮНАЯ ВОЛШЕБНИЦА / ЮНЫЙ ВОЛШЕБНИК', titleWord:'Академия Волшебства', cta:'✨ СОТВОРИТЬ ЗАКЛИНАНИЕ ПРАЗДНИКА!'
   }
 };
 const T = THEME_STR[CFG.theme] || THEME_STR.lab;
 if(CFG.theme==='space'){ EL=SPACE_PACK.EL; META=SPACE_PACK.META; REC=SPACE_PACK.REC; PRAISE=SPACE_PACK.PRAISE; }
+if(CFG.theme==='magic'){ EL=MAGIC_PACK.EL; META=MAGIC_PACK.META; REC=MAGIC_PACK.REC; PRAISE=MAGIC_PACK.PRAISE; }
 
 const EVENTS = {
   birthday:{emoji:'🎂',label:'с Днём Рождения'},
@@ -454,13 +493,14 @@ function init(){
   document.getElementById('step1').innerHTML=T.step1;
   document.getElementById('step2').innerHTML=T.step2;
   document.getElementById('step3').innerHTML=T.step3;
+  document.getElementById('step4').innerHTML=T.step4;
   document.getElementById('labBtn').textContent=T.place;
   document.getElementById('craftTitle').textContent=T.place;
   document.getElementById('rotateText').textContent=T.placeLow+' так не работает!';
   document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
   var ev=EVENTS[CFG.event]||EVENTS.default;
   document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
-  document.title='Элементкрафт v21 — '+T.titleWord+' '+CFG.name;
+  document.title='Элементкрафт v22 — '+T.titleWord+' '+CFG.name;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
@@ -706,11 +746,11 @@ function doCraft(){
     renderHot();
     if(mission>=REC.length){
       setTimeout(()=>{
-        document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
+        document.getElementById('msg').innerHTML='<b>'+T.cta+'</b> Нажми кнопку!';
         if(!document.getElementById('rocketBtn')){
           const btn=document.createElement('button');
           btn.id='rocketBtn';
-          btn.textContent='🚀 ЗАПУСТИТЬ РАКЕТУ';
+          btn.textContent=T.cta;
           btn.style.background='#e94560';
           btn.style.fontSize='20px';
           btn.onclick=launchRocket;
@@ -900,10 +940,10 @@ function updateMissionText(){
     const rec=REC[mission];
     document.getElementById('msg').innerHTML='<b>'+T.mentor+':</b> Тапай по цветным блокам! Создай '+rec.n+' ('+rec.i.join(' + ')+')';
   } else {
-    document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
+    document.getElementById('msg').innerHTML='<b>'+T.cta+'</b> Нажми кнопку!';
     const btn=document.createElement('button');
     btn.id='rocketBtn';
-    btn.textContent='🚀 ЗАПУСТИТЬ РАКЕТУ';
+    btn.textContent=T.cta;
     btn.style.background='#e94560';
     btn.style.fontSize='20px';
     btn.onclick=launchRocket;
