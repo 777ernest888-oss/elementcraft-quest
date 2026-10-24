@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v17</title>
+<title>Элементкрафт v18</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
@@ -49,7 +49,7 @@ button { width:100%; padding:8px; margin:3px 0; background:#4ecca3; border:none;
   #game { max-width:640px; }
   #fieldWrap { padding:10px; }
 }
-@media (min-width:900px) {
+@media (min-width:1000px) {
   #game { max-width:1000px; flex-direction:row; align-items:stretch; }
   #fieldWrap { flex:1 1 auto; padding:12px; }
   #ui { width:340px; flex:0 0 340px; overflow-y:auto; padding:12px 20px; display:flex; flex-direction:column; }
@@ -69,7 +69,7 @@ body.desk .modal { width:420px; }
 </head>
 <body>
 
-<div id="version">v17 · <span id="vw">-</span>px</div>
+<div id="version">v18 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -148,7 +148,7 @@ body.desk .modal { width:420px; }
 
 <div class="overlay hidden" id="galleryModal">
   <div class="modal">
-    <h2> КТО ЕСТЬ КТО</h2>
+    <h2>❓ КТО ЕСТЬ КТО</h2>
     <div id="galleryBody"></div>
     <button onclick="closeGallery()">ЗАКРЫТЬ</button>
   </div>
@@ -157,8 +157,8 @@ body.desk .modal { width:420px; }
 <div class="overlay hidden" id="finalModal">
   <div class="modal" style="text-align:center;">
     <h2 style="font-size:32px;">🚀 ПОЕХАЛИ!</h2>
-    <p id="finalLine" style="font-size:20px; color:#4ecca3; font-weight:bold;">Миссия выполнена!</p>
-    <p>Ты собрал все вещества и запустил ракету!</p>
+    <p id="finalLine" style="font-size:20px; color:#4ecca3; font-weight:bold;"></p>
+    <p id="finalReward" style="font-size:18px; color:#ffd43b; font-weight:bold;"></p>
     <div id="videoContainer"></div>
     <button onclick="closeFinal()">ЗАКРЫТЬ</button>
   </div>
@@ -166,7 +166,7 @@ body.desk .modal { width:420px; }
 
 <script>
 // ===== CFG: ПРОДАКШЕН-ДЕФОЛТЫ (всё из URL). У Кости в index.html: name:'Костя', videoUrl:'pozdravlenie.mp4' =====
-const CFG = { name:'', videoUrl:'', hints:'1' };
+const CFG = { name:'', videoUrl:'', hints:'1', event:'' };
 
 function convertToEmbedUrl(u){
   if(!u) return null;
@@ -187,6 +187,7 @@ function convertToEmbedUrl(u){
   if(p.get('name')) CFG.name=p.get('name');
   if(p.get('vid')){ var n=convertToEmbedUrl(p.get('vid')); CFG.videoUrl=n?n:''; }
   if(p.get('hints')==='0') CFG.hints='0';
+  if(p.get('event')) CFG.event=p.get('event');
   if(!CFG.name) CFG.name='Друг';
 })();
 var hintsOn = CFG.hints!=='0';
@@ -201,9 +202,9 @@ Na:{e:'⚪',ru:'Натрий',f:'Половинка поваренной сол�
 Cl:{e:'🌊',ru:'Хлор',f:'Запах в бассейне — это он.'},
 Si:{e:'⏳',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
 S:{e:'🌟',ru:'Сера',f:'В спичечных головках есть сера.'},
-Ca:{e:'',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
-Fe:{e:'🧲',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
-Cu:{e:'',ru:'Медь',f:'Из неё делают провода и монетки.'},
+Ca:{e:'🐚',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
+Fe:{e:'⚙',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
+Cu:{e:'🔌',ru:'Медь',f:'Из неё делают провода и монетки.'},
 Zn:{e:'🔵',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
 };
 const REC = [
@@ -213,6 +214,13 @@ const REC = [
   {i:['Si','O','O'],r:'glass',n:'Стекло',emo:'🍶',fact:'✨ Стекло — это расплавленный песок. Окна и экраны — бывший песок!',type:'linear3',atoms:['O','Si','O']},
   {i:['Cu','Zn'],r:'brass',n:'Латунь',emo:'🔔',fact:'🔩 Латунь крепче меди и цинка по отдельности. Так люди научились делать сплавы!',type:'linear',atoms:['Cu','Zn']}
 ];
+const EVENTS = {
+  birthday:{emoji:'🎂',label:'с Днём Рождения'},
+  newyear:{emoji:'🎄',label:'с Новым Годом'},
+  graduation:{emoji:'🎓',label:'с Выпускным'},
+  achievement:{emoji:'🏆',label:'с твоим достижением'},
+  default:{emoji:'🎉',label:'с твоим праздником'}
+};
 const PRAISE = ['Блестяще, коллега!','Точно по таблице!','Химия тебя любит!','Менделеев одобряет!','Нобелевка приближается!','Идеальная реакция!','Ты настоящий учёный!'];
 const FONT = 'Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
 
@@ -359,7 +367,7 @@ function updateHint(){
 function applyLayout(){
   var w=window.innerWidth;
   document.getElementById('vw').textContent=w;
-  if(w>=900){ document.body.classList.add('desk'); } else { document.body.classList.remove('desk'); }
+  if(w>=1000){ document.body.classList.add('desk'); } else { document.body.classList.remove('desk'); }
 }
 
 function fitCanvas(){
@@ -382,8 +390,10 @@ function init(){
   praiseDone=false;
   document.getElementById('labTitle').textContent='Лаборатория '+CFG.name;
   document.getElementById('greetLine').textContent='Привет, '+CFG.name+'!';
-  document.getElementById('finalLine').textContent='Миссия выполнена, '+CFG.name+'!';
-  document.title='Элементкрафт v17 — Лаборатория '+CFG.name;
+  document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
+  var ev=EVENTS[CFG.event]||EVENTS.default;
+  document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
+  document.title='Элементкрафт v18 — Лаборатория '+CFG.name;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
@@ -629,7 +639,7 @@ function doCraft(){
     renderHot();
     if(mission>=REC.length){
       setTimeout(()=>{
-        document.getElementById('msg').innerHTML='<b> Всё готово!</b> Нажми кнопку запуска ракеты!';
+        document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
         if(!document.getElementById('rocketBtn')){
           const btn=document.createElement('button');
           btn.id='rocketBtn';
@@ -765,7 +775,7 @@ function launchRocket(){
   } else if(v.includes('<iframe')){
     vc.innerHTML=v;
   } else if(v.includes('embed')||v.includes('/preview')){
-    vc.innerHTML='<iframe src="'+v+'" width="100%" height="200" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+    vc.innerHTML='<a href="'+v+'" target="_blank" rel="noopener" style="display:block;margin:0 0 8px;color:#4ecca3;font-size:14px;text-decoration:underline;">🔗 Открыть видео в новой вкладке</a><iframe src="'+v+'" width="100%" height="400" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
   } else {
     vc.innerHTML='<video id="finalVideo" controls autoplay playsinline style="width:100%; border-radius:12px;"><source src="'+v+'" type="video/mp4">Ваш браузер не поддерживает видео.</video>';
   }
@@ -807,7 +817,7 @@ function updateMissionText(){
     const rec=REC[mission];
     document.getElementById('msg').innerHTML='<b>Менделеев:</b> Тапай по цветным блокам! Создай '+rec.n+' ('+rec.i.join(' + ')+')';
   } else {
-    document.getElementById('msg').innerHTML='<b> Всё готово!</b> Нажми кнопку запуска ракеты!';
+    document.getElementById('msg').innerHTML='<b>🚀 Всё готово!</b> Нажми кнопку запуска ракеты!';
     const btn=document.createElement('button');
     btn.id='rocketBtn';
     btn.textContent='🚀 ЗАПУСТИТЬ РАКЕТУ';
