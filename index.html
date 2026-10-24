@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v20</title>
+<title>Элементкрафт v21</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
@@ -70,7 +70,7 @@ body.desk #hintPointer { font-size:46px; }
 </head>
 <body>
 
-<div id="version">v20 · <span id="vw">-</span>px</div>
+<div id="version">v21 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -228,7 +228,7 @@ const SPACE_PACK = {
   O:{e:'⭕',ru:'Кислород',f:'Им дышат космонавты на станции.'},
   C:{e:'💎',ru:'Углерод',f:'Из него графит в карандашах и алмазы.'},
   N:{e:'💨',ru:'Азот',f:'Большая часть воздуха станции — азот.'},
-  Si:{e:'🔆',ru:'Кремний',f:'Из него солнечные батареи станции.'},
+  Si:{e:'☀',ru:'Кремний',f:'Из него солнечные батареи станции.'},
   Fe:{e:'⚙',ru:'Железо',f:'Из него ядро планет и корпус корабля.'},
   Ni:{e:'🔩',ru:'Никель',f:'Никель прилетает в метеоритах из космоса!'},
   Mg:{e:'✨',ru:'Магний',f:'Горит яркой вспышкой, как салют.'},
@@ -237,10 +237,10 @@ const SPACE_PACK = {
   Au:{e:'👑',ru:'Золото',f:'Золотом покрыты стёкла скафандров!'}
   },
   REC:[
-  {i:['H','H','O'],r:'water',n:'Вода для экипажа',emo:'💧',fact:'💧 Без воды космонавт не протянет и дня!',type:'water'},
-  {i:['N','N','O','O'],r:'air',n:'Атмосфера станции',emo:'🌬',fact:'🌬 Азот + кислород — такой смесью дышат на МКС!',type:'double',atoms:['N','O']},
-  {i:['Si','O','O'],r:'window',n:'Иллюминатор',emo:'🔭',fact:'🔭 Сквозь кварцевое стекло видно всю Вселенную!',type:'linear3',atoms:['O','Si','O']},
-  {i:['Fe','Ni'],r:'hull',n:'Сплав корпуса',emo:'🛡',fact:'🛡 Железо + никель — броня от космического мусора!',type:'linear',atoms:['Fe','Ni']},
+  {i:['H','H','O'],r:'water',n:'Вода для экипажа',emo:'🌊',fact:'🌊 Без воды космонавт не протянет и дня!',type:'water'},
+  {i:['N','N','O','O'],r:'air',n:'Атмосфера станции',emo:'💨',fact:'💨 Азот + кислород — такой смесью дышат на МКС!',type:'double',atoms:['N','O']},
+  {i:['Si','O','O'],r:'window',n:'Иллюминатор',emo:'🌟',fact:'🌟 Сквозь иллюминатор видны все звёзды!',type:'linear3',atoms:['O','Si','O']},
+  {i:['Fe','Ni'],r:'hull',n:'Сплав корпуса',emo:'🔩',fact:'🔩 Железо + никель — броня от космического мусора!',type:'linear',atoms:['Fe','Ni']},
   {i:['H','H','O','O'],r:'fuel',n:'Ракетное топливо',emo:'🚀',fact:'🚀 Жидкий водород + кислород — и мы летим к звёздам!',type:'fuel'}
   ],
   PRAISE:['Поехали!','Космос ближе, чем кажется!','Королёв одобряет!','Стыковка идеальная!','Ты рождён для космоса!','Орбита рассчитана верно!','Гагарин бы улыбнулся!']
@@ -460,7 +460,7 @@ function init(){
   document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
   var ev=EVENTS[CFG.event]||EVENTS.default;
   document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
-  document.title='Элементкрафт v20 — '+T.titleWord+' '+CFG.name;
+  document.title='Элементкрафт v21 — '+T.titleWord+' '+CFG.name;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
