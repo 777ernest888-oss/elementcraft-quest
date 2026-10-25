@@ -19,10 +19,10 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
 .item { background:var(--modal-bg); border:2px solid var(--accent); border-radius:6px; padding:5px; min-width:40px; text-align:center; cursor:pointer; flex-shrink:0; }
 .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:100; padding:16px; }
 .overlay.show { display:flex; }
-#start { overflow:hidden; z-index:200; }
-#start.bg-lab { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-lab.jpg') center top / cover no-repeat; }
-#start.bg-space { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-space.jpg') center top / cover no-repeat; }
-#start.bg-magic { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-magic.jpg') center top / cover no-repeat; }
+#start { overflow:hidden; z-index:200; background: rgba(0,0,0,0.95) !important; }
+#start.bg-lab { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-lab.jpg') center top / cover no-repeat !important; }
+#start.bg-space { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-space.jpg') center top / cover no-repeat !important; }
+#start.bg-magic { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-magic.jpg') center top / cover no-repeat !important; }
 #particles { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
 .particle { position:absolute; animation:float 4s infinite ease-in-out; opacity:0.6; }
 @keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-20px) rotate(180deg); } }
@@ -74,7 +74,6 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
   #hotbar { flex-wrap:wrap; overflow-x:visible; }
   #craftHotbar { flex-wrap:wrap; overflow-x:visible; }
   .modal { width:420px; }
-  #start.bg-lab, #start.bg-space, #start.bg-magic { background-size:auto 100%; background-position:center center; }
 }
 body.desk #game { max-width:1000px; flex-direction:row; align-items:stretch; }
 body.desk #fieldWrap { flex:1 1 auto; padding:12px; }
@@ -104,7 +103,7 @@ body.desk #hintPointer { font-size:46px; }
 </div>
 
 <div id="hintPointer" class="hidden">👇</div>
-<div id="rotateGuard"> Поверни телефон вертикально —<br><span id="rotateText">лаборатория так не работает!</span></div>
+<div id="rotateGuard">📱 Поверни телефон вертикально —<br><span id="rotateText">лаборатория так не работает!</span></div>
 
 <div class="overlay show" id="start">
   <div id="particles"></div>
@@ -150,7 +149,7 @@ body.desk #hintPointer { font-size:46px; }
 
 <div class="overlay hidden" id="successModal">
   <div class="modal success">
-    <h2 style="font-size:26px;"> ОТЛИЧНО!</h2>
+    <h2 style="font-size:26px;">🎉 ОТЛИЧНО!</h2>
     <div id="bigEmoji"></div>
     <p id="successText" style="font-size:17px; text-align:center; color:var(--accent); font-weight:bold;"></p>
     <div id="moleculeDisplay"></div>
@@ -234,10 +233,10 @@ N:{e:'💨',ru:'Азот',f:'Больше всего в воздухе — им�
 Na:{e:'⚪',ru:'Натрий',f:'Половинка поваренной соли.'},
 Cl:{e:'🌊',ru:'Хлор',f:'Запах в бассейне — это он.'},
 Si:{e:'⏳',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
-S:{e:'',ru:'Сера',f:'В спичечных головках есть сера.'},
+S:{e:'🌟',ru:'Сера',f:'В спичечных головках есть сера.'},
 Ca:{e:'🐚',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
 Fe:{e:'⚙',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
-Cu:{e:'',ru:'Медь',f:'Из неё делают провода и монетки.'},
+Cu:{e:'🔌',ru:'Медь',f:'Из неё делают провода и монетки.'},
 Zn:{e:'🔵',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
 };
 let REC = [
@@ -266,11 +265,11 @@ const SPACE_PACK = {
   Au:{e:'👑',ru:'Золото',f:'Золотом покрыты стёкла скафандров!'}
   },
   REC:[
-  {i:['H','H','O'],r:'water',n:'Вода для экипажа',emo:'🌊',fact:' Без воды космонавт не протянет и дня!',type:'water'},
+  {i:['H','H','O'],r:'water',n:'Вода для экипажа',emo:'🌊',fact:'🌊 Без воды космонавт не протянет и дня!',type:'water'},
   {i:['N','N','O','O'],r:'air',n:'Атмосфера станции',emo:'💨',fact:'💨 Азот + кислород — такой смесью дышат на МКС!',type:'double',atoms:['N','O']},
   {i:['Si','O','O'],r:'window',n:'Иллюминатор',emo:'🌟',fact:'🌟 Сквозь иллюминатор видны все звёзды!',type:'linear3',atoms:['O','Si','O']},
   {i:['Fe','Ni'],r:'hull',n:'Сплав корпуса',emo:'🔩',fact:'🔩 Железо + никель — броня от космического мусора!',type:'linear',atoms:['Fe','Ni']},
-  {i:['H','H','O','O'],r:'fuel',n:'Ракетное топливо',emo:'',fact:'🚀 Жидкий водород + кислород — и мы летим к звёздам!',type:'fuel'}
+  {i:['H','H','O','O'],r:'fuel',n:'Ракетное топливо',emo:'🚀',fact:'🚀 Жидкий водород + кислород — и мы летим к звёздам!',type:'fuel'}
   ],
   PRAISE:['Поехали!','Космос ближе, чем кажется!','Королёв одобряет!','Стыковка идеальная!','Ты рождён для космоса!','Орбита рассчитана верно!','Гагарин бы улыбнулся!']
 };
@@ -284,15 +283,15 @@ const MAGIC_PACK = {
   L:{e:'⭕',ru:'Луна',f:'Лунный свет виден только ночью.'},
   R:{e:'🌊',ru:'Роса',f:'Утренняя роса — слёзы травы.'},
   V:{e:'💨',ru:'Вихрь',f:'Вихрь кружит и смешивает зелья.'},
-  Zv:{e:'',ru:'Звон',f:'Звон колокольчика открывает волшебство.'},
+  Zv:{e:'🔔',ru:'Звон',f:'Звон колокольчика открывает волшебство.'},
   S:{e:'☀',ru:'Луч',f:'Солнечный луч теплее любого огня.'},
   Kor:{e:'👑',ru:'Корона',f:'Корона — символ настоящего волшебника.'},
   Ser:{e:'⚪',ru:'Жемчуг',f:'Жемчуг блестит как луна.'}
   },
   REC:[
   {i:['Ch','Ch','R'],r:'friendship',n:'Зелье Дружбы',emo:'⭐',fact:'⭐ Друзья — это чудо, которое всегда рядом!',type:'linear3',atoms:['Ch','R','Ch']},
-  {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:' Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
-  {i:['Z','Z','Ch'],r:'luck',n:'Зелье Удачи',emo:'',fact:'☀ Удача любит тех, кто верит в себя!',type:'linear3',atoms:['Z','Ch','Z']},
+  {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:'⚪ Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
+  {i:['Z','Z','Ch'],r:'luck',n:'Зелье Удачи',emo:'☀',fact:'☀ Удача любит тех, кто верит в себя!',type:'linear3',atoms:['Z','Ch','Z']},
   {i:['L','V'],r:'dreams',n:'Зелье Снов',emo:'⭕',fact:'⭕ Во снах мы видим то, что сердце хочет!',type:'linear',atoms:['L','V']},
   {i:['Ch','Z','K','L'],r:'celebration',n:'Заклинание Праздника',emo:'✨',fact:'✨ Праздник начинается, когда ты готов волшебничать!',type:'linear4',atoms:['Ch','Z','K','L']}
   ],
