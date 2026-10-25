@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v25</title>
+<title>Элементкрафт v25.1</title>
 <style>
 :root { --ui:#16213e; --accent:#4ecca3; --modal-bg:#16213e; --modal-border:#4ecca3; --btn:#4ecca3; --btn-text:#1a1a2e; --grad1:#1a1a2e; --grad2:#16213e; }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -20,10 +20,10 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
 .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:100; padding:16px; }
 .overlay.show { display:flex; }
 #start { overflow:hidden; }
-#start.bg-lab { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-lab.jpg') center top / cover no-repeat; }
-#start.bg-space { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-space.jpg') center top / cover no-repeat; }
-#start.bg-magic { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-magic.jpg') center top / cover no-repeat; }
-#start.bg-pastry { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-pastry.jpg') center top / cover no-repeat; }
+#start.bg-lab { background:linear-gradient(to bottom, rgba(8,6,16,0.85), rgba(8,6,16,0.6) 45%, rgba(8,6,16,0.85)), url('https://quest.prostors.ru/img/bg-lab.jpg') center top / cover no-repeat; }
+#start.bg-space { background:linear-gradient(to bottom, rgba(8,6,16,0.85), rgba(8,6,16,0.6) 45%, rgba(8,6,16,0.85)), url('https://quest.prostors.ru/img/bg-space.jpg') center top / cover no-repeat; }
+#start.bg-magic { background:linear-gradient(to bottom, rgba(8,6,16,0.85), rgba(8,6,16,0.6) 45%, rgba(8,6,16,0.85)), url('https://quest.prostors.ru/img/bg-magic.jpg') center top / cover no-repeat; }
+#start.bg-pastry { background:linear-gradient(to bottom, rgba(80,40,60,0.9), rgba(80,40,60,0.7) 45%, rgba(80,40,60,0.9)), url('https://quest.prostors.ru/img/bg-pastry.jpg') center top / cover no-repeat; }
 #particles { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
 .particle { position:absolute; animation:float 4s infinite ease-in-out; opacity:0.6; }
 @keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-20px) rotate(180deg); } }
@@ -89,11 +89,13 @@ body.desk #hotbar { flex-wrap:wrap; overflow-x:visible; }
 body.desk #craftHotbar { flex-wrap:wrap; overflow-x:visible; }
 body.desk .modal { width:420px; }
 body.desk #hintPointer { font-size:46px; }
+#rocketBtn { animation:ctaPulse 1.5s infinite ease-in-out; font-size:20px !important; padding:16px !important; }
+@keyframes ctaPulse { 0%,100% { transform:scale(1); box-shadow:0 0 0 rgba(233,69,96,0); } 50% { transform:scale(1.05); box-shadow:0 0 20px rgba(233,69,96,0.6); } }
 </style>
 </head>
 <body>
 
-<div id="version">v25 · <span id="vw">-</span>px</div>
+<div id="version">v25.1 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -190,7 +192,7 @@ body.desk #hintPointer { font-size:46px; }
 
 <div class="overlay hidden" id="finalModal">
   <div class="modal" style="text-align:center;">
-    <h2 id="finalH2" style="font-size:28px;">🚀 ПОЕХАЛИ!</h2>
+    <h2 id="finalH2" style="font-size:28px;"> ПОЕХАЛИ!</h2>
     <p id="finalFrom" style="font-size:15px; color:var(--accent); font-weight:bold;" class="hidden"></p>
     <p id="finalLine" style="font-size:17px; color:var(--accent); font-weight:bold;"></p>
     <p id="finalReward" style="font-size:15px; color:#ffd43b; font-weight:bold;"></p>
@@ -239,10 +241,10 @@ N:{e:'💨',ru:'Азот',f:'Больше всего в воздухе — им�
 Na:{e:'⚪',ru:'Натрий',f:'Половинка поваренной соли.'},
 Cl:{e:'🌊',ru:'Хлор',f:'Запах в бассейне — это он.'},
 Si:{e:'⏳',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
-S:{e:'🌟',ru:'Сера',f:'В спичечных головках есть сера.'},
+S:{e:'',ru:'Сера',f:'В спичечных головках есть сера.'},
 Ca:{e:'🐚',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
 Fe:{e:'⚙',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
-Cu:{e:'🔌',ru:'Медь',f:'Из неё делают провода и монетки.'},
+Cu:{e:'',ru:'Медь',f:'Из неё делают провода и монетки.'},
 Zn:{e:'🔵',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
 };
 let REC = [
@@ -262,19 +264,19 @@ const SPACE_PACK = {
   O:{e:'⭕',ru:'Кислород',f:'Им дышат космонавты на станции.'},
   C:{e:'💎',ru:'Углерод',f:'Из него графит в карандашах и алмазы.'},
   N:{e:'💨',ru:'Азот',f:'Большая часть воздуха станции — азот.'},
-  Si:{e:'☀',ru:'Кремний',f:'Из него солнечные батареи станции.'},
+  Si:{e:'',ru:'Кремний',f:'Из него солнечные батареи станции.'},
   Fe:{e:'⚙',ru:'Железо',f:'Из него ядро планет и корпус корабля.'},
   Ni:{e:'🔩',ru:'Никель',f:'Никель прилетает в метеоритах из космоса!'},
   Mg:{e:'✨',ru:'Магний',f:'Горит яркой вспышкой, как салют.'},
-  Al:{e:'✈',ru:'Алюминий',f:'Лёгкий металл для крыльев и ракет.'},
+  Al:{e:'',ru:'Алюминий',f:'Лёгкий металл для крыльев и ракет.'},
   Ti:{e:'⚓',ru:'Титан',f:'Прочный как якорь, а лёгкий как перо.'},
   Au:{e:'👑',ru:'Золото',f:'Золотом покрыты стёкла скафандров!'}
   },
   REC:[
   {i:['H','H','O'],r:'water',n:'Вода для экипажа',emo:'🌊',fact:'🌊 Без воды космонавт не протянет и дня!',type:'water'},
   {i:['N','N','O','O'],r:'air',n:'Атмосфера станции',emo:'💨',fact:'💨 Азот + кислород — такой смесью дышат на МКС!',type:'double',atoms:['N','O']},
-  {i:['Si','O','O'],r:'window',n:'Иллюминатор',emo:'🌟',fact:'🌟 Сквозь иллюминатор видны все звёзды!',type:'linear3',atoms:['O','Si','O']},
-  {i:['Fe','Ni'],r:'hull',n:'Сплав корпуса',emo:'🔩',fact:'🔩 Железо + никель — броня от космического мусора!',type:'linear',atoms:['Fe','Ni']},
+  {i:['Si','O','O'],r:'window',n:'Иллюминатор',emo:'🌟',fact:' Сквозь иллюминатор видны все звёзды!',type:'linear3',atoms:['O','Si','O']},
+  {i:['Fe','Ni'],r:'hull',n:'Сплав корпуса',emo:'🔩',fact:' Железо + никель — броня от космического мусора!',type:'linear',atoms:['Fe','Ni']},
   {i:['H','H','O','O'],r:'fuel',n:'Ракетное топливо',emo:'🚀',fact:'🚀 Жидкий водород + кислород — и мы летим к звёздам!',type:'fuel'}
   ],
   PRAISE:['Поехали!','Космос ближе, чем кажется!','Королёв одобряет!','Стыковка идеальная!','Ты рождён для космоса!','Орбита рассчитана верно!','Гагарин бы улыбнулся!']
@@ -292,13 +294,13 @@ const MAGIC_PACK = {
   Zv:{e:'🔔',ru:'Звон',f:'Звон колокольчика открывает волшебство.'},
   S:{e:'☀',ru:'Луч',f:'Солнечный луч теплее любого огня.'},
   Kor:{e:'👑',ru:'Корона',f:'Корона — символ настоящего волшебника.'},
-  Ser:{e:'⚪',ru:'Жемчуг',f:'Жемчуг блестит как луна.'}
+  Ser:{e:'',ru:'Жемчуг',f:'Жемчуг блестит как луна.'}
   },
   REC:[
   {i:['Ch','Ch','R'],r:'friendship',n:'Зелье Дружбы',emo:'⭐',fact:'⭐ Друзья — это чудо, которое всегда рядом!',type:'linear3',atoms:['Ch','R','Ch']},
-  {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:'⚪ Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
+  {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:' Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
   {i:['Z','Z','Ch'],r:'luck',n:'Зелье Удачи',emo:'☀',fact:'☀ Удача любит тех, кто верит в себя!',type:'linear3',atoms:['Z','Ch','Z']},
-  {i:['L','V'],r:'dreams',n:'Зелье Снов',emo:'⭕',fact:'⭕ Во снах мы видим то, что сердце хочет!',type:'linear',atoms:['L','V']},
+  {i:['L','V'],r:'dreams',n:'Зелье Снов',emo:'⭕',fact:' Во снах мы видим то, что сердце хочет!',type:'linear',atoms:['L','V']},
   {i:['Ch','Z','K','L'],r:'celebration',n:'Заклинание Праздника',emo:'✨',fact:'✨ Праздник начинается, когда ты готов волшебничать!',type:'linear4',atoms:['Ch','Z','K','L']}
   ],
   PRAISE:['Волшебно!','Магия работает!','Фея гордится тобой!','Заклинание удалось!','Ты настоящая волшебница!','Зелье получилось!','Чудо свершилось!']
@@ -307,7 +309,7 @@ const MAGIC_PACK = {
 const PASTRY_PACK = {
   EL:{Mu:'#f8f9fa',Sa:'#f3d9fa',Ya:'#ffd43b',Ma:'#ffe066',Ka:'#8b5a3c',Va:'#f3e9d2',Yg:'#d6336c',Mo:'#d0ebff',Md:'#f08c00',Kr:'#b197fc'},
   META:{
-  Mu:{e:'⚪',ru:'Мука',f:'Белая и пушистая, основа всего!'},
+  Mu:{e:'',ru:'Мука',f:'Белая и пушистая, основа всего!'},
   Sa:{e:'💎',ru:'Сахар',f:'Делает всё сладким и вкусным!'},
   Ya:{e:'⭕',ru:'Яйцо',f:'Связывает все ингредиенты вместе!'},
   Ma:{e:'☀',ru:'Масло',f:'Делает тесто нежным и мягким!'},
@@ -322,8 +324,8 @@ const PASTRY_PACK = {
   {i:['Mu','Ya','Mo'],r:'dough',n:'Тесто',emo:'🍪',fact:'🍪 Основа любого вкусного десерта!',type:'linear3',atoms:['Mu','Ya','Mo']},
   {i:['Ma','Sa','Va'],r:'cream',n:'Крем',emo:'🧁',fact:'🧁 Воздушный, как настоящее облако!',type:'linear3',atoms:['Ma','Sa','Va']},
   {i:['Ka','Mo'],r:'glaze',n:'Глазурь',emo:'✨',fact:'✨ Блестит и пахнет настоящим шоколадом!',type:'linear',atoms:['Ka','Mo']},
-  {i:['Yg','Sa','Md'],r:'filling',n:'Начинка',emo:'🔵',fact:'🔵 Сладкая, сочная и очень ароматная!',type:'linear3',atoms:['Yg','Sa','Md']},
-  {i:['Mu','Sa','Ka','Yg'],r:'cake',n:'Праздничный торт',emo:'🎂',fact:'🎂 Самый вкусный торт на свете готов!',type:'linear4',atoms:['Mu','Sa','Ka','Yg']}
+  {i:['Yg','Sa','Md'],r:'filling',n:'Начинка',emo:'🔵',fact:' Сладкая, сочная и очень ароматная!',type:'linear3',atoms:['Yg','Sa','Md']},
+  {i:['Mu','Sa','Ka','Yg'],r:'cake',n:'Праздничный торт',emo:'',fact:'🎂 Самый вкусный торт на свете готов!',type:'linear4',atoms:['Mu','Sa','Ka','Yg']}
   ],
   PRAISE:['Вкуснотища!','Шеф Пьер гордится тобой!','Настоящий шедевр!','Идеальный рецепт!','Ты будущий кондитер!','Сладкая победа!','Просто объедение!']
 };
@@ -338,7 +340,7 @@ const THEME_STR = {
     step2:'2. <b>Открой лабораторию</b> и соедини элементы по формуле',
     step3:'3. <b>Создавай</b> настоящие вещества: воду, соль, стекло...',
     step4:'4. <b>Запусти ракету</b> в конце!',
-    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleTpl:'Лаборатория {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false, bg:'img/bg-lab.jpg',
+    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleTpl:'Лаборатория {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:' ПОЕХАЛИ!', names:false, emojiTile:false, bg:'img/bg-lab.jpg',
     emblem:'<svg viewBox="0 0 120 120" width="140" height="140"><path d="M45 15h30v30l25 45a10 10 0 0 1-9 15H29a10 10 0 0 1-9-15l25-45z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="52" cy="85" r="6" fill="var(--accent)"/><circle cx="68" cy="75" r="4" fill="var(--accent)"/><circle cx="60" cy="95" r="5" fill="var(--accent)"/></svg>'
   },
   space:{
@@ -350,7 +352,7 @@ const THEME_STR = {
     step2:'2. <b>Открой сборочный цех</b> и соедини материалы по схеме',
     step3:'3. <b>Создавай</b> настоящие вещи: воду, атмосферу, иллюминатор...',
     step4:'4. <b>Запусти ракету</b> в конце!',
-    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleTpl:'Станция {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false, bg:'img/bg-space.jpg',
+    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleTpl:'Станция {name}', cta:' ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false, bg:'img/bg-space.jpg',
     emblem:'<svg viewBox="0 0 120 120" width="140" height="140"><path d="M60 10c15 15 20 35 20 50l-20 20-20-20c0-15 5-35 20-50z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="60" cy="50" r="10" fill="none" stroke="var(--accent)" stroke-width="5"/><path d="M40 62 25 82l15-5M80 62l15 20-15-5" fill="none" stroke="var(--accent)" stroke-width="6"/><path d="M52 92l8 16 8-16" fill="none" stroke="var(--accent)" stroke-width="6"/></svg>'
   },
   magic:{
@@ -427,9 +429,9 @@ const SKIN = pickSkin();
 const EVENTS = {
   birthday:{emoji:'🎂',label:'с Днём Рождения'},
   newyear:{emoji:'🎄',label:'с Новым Годом'},
-  graduation:{emoji:'🎓',label:'с Выпускным'},
+  graduation:{emoji:'',label:'с Выпускным'},
   achievement:{emoji:'🏆',label:'с твоим достижением'},
-  default:{emoji:'🎉',label:'с твоим праздником'}
+  default:{emoji:'',label:'с твоим праздником'}
 };
 const FONT = 'Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
 
@@ -677,10 +679,10 @@ function init(){
   document.getElementById('craftTitle').textContent=T.place;
   document.getElementById('rotateText').textContent=T.placeLow+' так не работает!';
   document.getElementById('finalH2').textContent=T.finalH2;
-  document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
+  document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии!';
   var ev=EVENTS[CFG.event]||EVENTS.default;
   document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
-  document.title='Элементкрафт v25 — '+title;
+  document.title='Элементкрафт v25.1 — '+title;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
@@ -952,13 +954,12 @@ function doCraft(){
     renderHot();
     if(mission>=REC.length){
       setTimeout(()=>{
-        document.getElementById('msg').innerHTML='<b>'+T.cta+'</b>';
+        document.getElementById('msg').innerHTML='';
         if(!document.getElementById('rocketBtn')){
           const btn=document.createElement('button');
           btn.id='rocketBtn';
           btn.textContent=T.cta;
           btn.style.background='#e94560';
-          btn.style.fontSize='18px';
           btn.onclick=launchRocket;
           document.getElementById('ui').appendChild(btn);
         }
@@ -1112,7 +1113,7 @@ function launchRocket(){
   const vc=document.getElementById('videoContainer');
   const v=CFG.videoUrl;
   if(!v){
-    vc.innerHTML='<p style="color:var(--accent);">🎬 Видео-поздравление будет здесь!</p>';
+    vc.innerHTML='<p style="color:var(--accent);"> Видео-поздравление будет здесь!</p>';
   } else if(v.includes('<iframe')){
     vc.innerHTML=v;
   } else if(v.includes('embed')||v.includes('/preview')){
@@ -1158,12 +1159,11 @@ function updateMissionText(){
     const rec=REC[mission];
     document.getElementById('msg').innerHTML='<b>'+T.mentor+':</b> Тапай по цветным блокам! Создай '+rec.n+' ('+recStr(rec)+')';
   } else {
-    document.getElementById('msg').innerHTML='<b>'+T.cta+'</b>';
+    document.getElementById('msg').innerHTML='';
     const btn=document.createElement('button');
     btn.id='rocketBtn';
     btn.textContent=T.cta;
     btn.style.background='#e94560';
-    btn.style.fontSize='18px';
     btn.onclick=launchRocket;
     document.getElementById('ui').appendChild(btn);
   }
