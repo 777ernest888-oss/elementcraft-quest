@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v24</title>
+<title>Элементкрафт v24.1</title>
 <style>
 :root { --ui:#16213e; --accent:#4ecca3; --modal-bg:#16213e; --modal-border:#4ecca3; --btn:#4ecca3; --btn-text:#1a1a2e; --grad1:#1a1a2e; --grad2:#16213e; }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -30,9 +30,9 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
 #coverEmblem { margin:0 auto 10px; }
 #coverTitle { font-size:38px; letter-spacing:4px; color:#fff; text-shadow:0 2px 20px rgba(0,0,0,0.9), 0 0 40px rgba(255,255,255,0.3); margin-bottom:6px; font-weight:bold; }
 #coverSub { font-size:22px; color:var(--accent); font-weight:bold; margin-bottom:10px; text-shadow:0 1px 10px rgba(0,0,0,0.9); }
-#coverRank { font-size:12px; color:#ddd; letter-spacing:2px; margin-bottom:14px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
-#coverFrom { font-size:16px; color:var(--accent); margin-bottom:10px; font-weight:bold; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
-#coverGreet { font-size:18px; margin-bottom:18px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
+#coverRank { font-size:14px; color:#ddd; letter-spacing:2px; margin-bottom:14px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
+#coverFrom { font-size:18px; color:var(--accent); margin-bottom:10px; font-weight:bold; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
+#coverGreet { font-size:20px; margin-bottom:18px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
 #cover button { font-size:18px; padding:12px; }
 #cover .ghost { background:transparent; color:var(--accent); border:2px solid var(--accent); }
 .modal { background:var(--modal-bg); border:2px solid var(--modal-border); border-radius:12px; padding:14px; max-width:90%; width:350px; max-height:90%; overflow-y:auto; }
@@ -74,6 +74,7 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
   #hotbar { flex-wrap:wrap; overflow-x:visible; }
   #craftHotbar { flex-wrap:wrap; overflow-x:visible; }
   .modal { width:420px; }
+  #start.bg-lab, #start.bg-space, #start.bg-magic { background-size:auto 100%; background-position:center center; }
 }
 body.desk #game { max-width:1000px; flex-direction:row; align-items:stretch; }
 body.desk #fieldWrap { flex:1 1 auto; padding:12px; }
@@ -87,7 +88,7 @@ body.desk #hintPointer { font-size:46px; }
 </head>
 <body>
 
-<div id="version">v24 · <span id="vw">-</span>px</div>
+<div id="version">v24.1 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -103,7 +104,7 @@ body.desk #hintPointer { font-size:46px; }
 </div>
 
 <div id="hintPointer" class="hidden">👇</div>
-<div id="rotateGuard">📱 Поверни телефон вертикально —<br><span id="rotateText">лаборатория так не работает!</span></div>
+<div id="rotateGuard"> Поверни телефон вертикально —<br><span id="rotateText">лаборатория так не работает!</span></div>
 
 <div class="overlay show" id="start">
   <div id="particles"></div>
@@ -114,8 +115,8 @@ body.desk #hintPointer { font-size:46px; }
     <div id="coverRank"></div>
     <div id="coverFrom" class="hidden"></div>
     <div id="coverGreet"></div>
-    <button onclick="startGame()">НАЧАТЬ МИССИЮ</button>
     <button class="ghost" onclick="openHowto()">КАК ИГРАТЬ?</button>
+    <button onclick="startGame()">НАЧАТЬ МИССИЮ</button>
   </div>
 </div>
 
@@ -149,7 +150,7 @@ body.desk #hintPointer { font-size:46px; }
 
 <div class="overlay hidden" id="successModal">
   <div class="modal success">
-    <h2 style="font-size:26px;">🎉 ОТЛИЧНО!</h2>
+    <h2 style="font-size:26px;"> ОТЛИЧНО!</h2>
     <div id="bigEmoji"></div>
     <p id="successText" style="font-size:17px; text-align:center; color:var(--accent); font-weight:bold;"></p>
     <div id="moleculeDisplay"></div>
@@ -194,7 +195,6 @@ body.desk #hintPointer { font-size:46px; }
 </div>
 
 <script>
-// ===== CFG: всё из URL (Zero-Storage) =====
 const CFG = { name:'', videoUrl:'', hints:'1', event:'', theme:'lab', skin:'', gender:'', from:'' };
 
 function convertToEmbedUrl(u){
@@ -225,7 +225,6 @@ function convertToEmbedUrl(u){
 })();
 var hintsOn = CFG.hints!=='0';
 
-// ===== ТЕМА ПО УМОЛЧАНИЮ: ЛАБОРАТОРИЯ =====
 let EL = {H:'#a5d8ff',O:'#d0ebff',C:'#495057',N:'#b197fc',Na:'#dee2e6',Cl:'#69db7c',Si:'#ffd43b',S:'#ffe066',Ca:'#f8f9fa',Fe:'#adb5bd',Cu:'#e8590c',Zn:'#74c0fc'};
 let META = {
 H:{e:'🎈',ru:'Водород',f:'Легче воздуха! Им летают шарики.'},
@@ -235,10 +234,10 @@ N:{e:'💨',ru:'Азот',f:'Больше всего в воздухе — им�
 Na:{e:'⚪',ru:'Натрий',f:'Половинка поваренной соли.'},
 Cl:{e:'🌊',ru:'Хлор',f:'Запах в бассейне — это он.'},
 Si:{e:'⏳',ru:'Кремний',f:'Из него сделаны песок и стекло.'},
-S:{e:'🌟',ru:'Сера',f:'В спичечных головках есть сера.'},
+S:{e:'',ru:'Сера',f:'В спичечных головках есть сера.'},
 Ca:{e:'🐚',ru:'Кальций',f:'Кости и молоко сильны благодаря ему.'},
 Fe:{e:'⚙',ru:'Железо',f:'Гвозди, магниты и даже кровь.'},
-Cu:{e:'🔌',ru:'Медь',f:'Из неё делают провода и монетки.'},
+Cu:{e:'',ru:'Медь',f:'Из неё делают провода и монетки.'},
 Zn:{e:'🔵',ru:'Цинк',f:'Покрывает гвозди, чтобы не ржавели.'}
 };
 let REC = [
@@ -267,16 +266,15 @@ const SPACE_PACK = {
   Au:{e:'👑',ru:'Золото',f:'Золотом покрыты стёкла скафандров!'}
   },
   REC:[
-  {i:['H','H','O'],r:'water',n:'Вода для экипажа',emo:'🌊',fact:'🌊 Без воды космонавт не протянет и дня!',type:'water'},
+  {i:['H','H','O'],r:'water',n:'Вода для экипажа',emo:'🌊',fact:' Без воды космонавт не протянет и дня!',type:'water'},
   {i:['N','N','O','O'],r:'air',n:'Атмосфера станции',emo:'💨',fact:'💨 Азот + кислород — такой смесью дышат на МКС!',type:'double',atoms:['N','O']},
   {i:['Si','O','O'],r:'window',n:'Иллюминатор',emo:'🌟',fact:'🌟 Сквозь иллюминатор видны все звёзды!',type:'linear3',atoms:['O','Si','O']},
   {i:['Fe','Ni'],r:'hull',n:'Сплав корпуса',emo:'🔩',fact:'🔩 Железо + никель — броня от космического мусора!',type:'linear',atoms:['Fe','Ni']},
-  {i:['H','H','O','O'],r:'fuel',n:'Ракетное топливо',emo:'🚀',fact:'🚀 Жидкий водород + кислород — и мы летим к звёздам!',type:'fuel'}
+  {i:['H','H','O','O'],r:'fuel',n:'Ракетное топливо',emo:'',fact:'🚀 Жидкий водород + кислород — и мы летим к звёздам!',type:'fuel'}
   ],
   PRAISE:['Поехали!','Космос ближе, чем кажется!','Королёв одобряет!','Стыковка идеальная!','Ты рождён для космоса!','Орбита рассчитана верно!','Гагарин бы улыбнулся!']
 };
 
-// ===== ПАК «МАГИЯ»: ингредиенты названы детскими словами (влезают в плитку) =====
 const MAGIC_PACK = {
   EL:{Ch:'#f3d9fa',Z:'#ffd43b',K:'#a5d8ff',L:'#d0ebff',R:'#63e6be',V:'#b197fc',Zv:'#dee2e6',S:'#ffe066',Kor:'#f08c00',Ser:'#adb5bd'},
   META:{
@@ -286,15 +284,15 @@ const MAGIC_PACK = {
   L:{e:'⭕',ru:'Луна',f:'Лунный свет виден только ночью.'},
   R:{e:'🌊',ru:'Роса',f:'Утренняя роса — слёзы травы.'},
   V:{e:'💨',ru:'Вихрь',f:'Вихрь кружит и смешивает зелья.'},
-  Zv:{e:'🔔',ru:'Звон',f:'Звон колокольчика открывает волшебство.'},
+  Zv:{e:'',ru:'Звон',f:'Звон колокольчика открывает волшебство.'},
   S:{e:'☀',ru:'Луч',f:'Солнечный луч теплее любого огня.'},
   Kor:{e:'👑',ru:'Корона',f:'Корона — символ настоящего волшебника.'},
   Ser:{e:'⚪',ru:'Жемчуг',f:'Жемчуг блестит как луна.'}
   },
   REC:[
   {i:['Ch','Ch','R'],r:'friendship',n:'Зелье Дружбы',emo:'⭐',fact:'⭐ Друзья — это чудо, которое всегда рядом!',type:'linear3',atoms:['Ch','R','Ch']},
-  {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:'⚪ Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
-  {i:['Z','Z','Ch'],r:'luck',n:'Зелье Удачи',emo:'☀',fact:'☀ Удача любит тех, кто верит в себя!',type:'linear3',atoms:['Z','Ch','Z']},
+  {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:' Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
+  {i:['Z','Z','Ch'],r:'luck',n:'Зелье Удачи',emo:'',fact:'☀ Удача любит тех, кто верит в себя!',type:'linear3',atoms:['Z','Ch','Z']},
   {i:['L','V'],r:'dreams',n:'Зелье Снов',emo:'⭕',fact:'⭕ Во снах мы видим то, что сердце хочет!',type:'linear',atoms:['L','V']},
   {i:['Ch','Z','K','L'],r:'celebration',n:'Заклинание Праздника',emo:'✨',fact:'✨ Праздник начинается, когда ты готов волшебничать!',type:'linear4',atoms:['Ch','Z','K','L']}
   ],
@@ -343,8 +341,6 @@ const T = THEME_STR[CFG.theme] || THEME_STR.lab;
 if(CFG.theme==='space'){ EL=SPACE_PACK.EL; META=SPACE_PACK.META; REC=SPACE_PACK.REC; PRAISE=SPACE_PACK.PRAISE; }
 if(CFG.theme==='magic'){ EL=MAGIC_PACK.EL; META=MAGIC_PACK.META; REC=MAGIC_PACK.REC; PRAISE=MAGIC_PACK.PRAISE; }
 
-// ===== СКИНЫ: 3 девичьих (0-2), 3 мальчишеских (3-5). РОДИТЕЛЬ НЕ ВЫБИРАЕТ: =====
-// ===== скин зашивается в ссылку при заказе (?skin=N); без него — сид от ссылки =====
 const SKINS = [
   {g:1,name:'Рассвет', empty:'#f6d9e6', ui:'#4a2b45', accent:'#f783ac', modal:'#3d2340', border:'#f783ac', btn:'#f783ac', btnText:'#fff', grad1:'#5a2a4a', grad2:'#2b1430'},
   {g:1,name:'Мятная мечта', empty:'#d9f2e6', ui:'#2b4a44', accent:'#63e6be', modal:'#23403a', border:'#63e6be', btn:'#63e6be', btnText:'#08302a', grad1:'#1f4a40', grad2:'#122b26'},
@@ -395,7 +391,6 @@ const EVENTS = {
 };
 const FONT = 'Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
 
-// ===== Склонение отправителя: «Квест от бабушки» =====
 function genitive(s){
   s=String(s||'').trim();
   if(!s) return '';
@@ -409,7 +404,6 @@ function genitive(s){
   return s;
 }
 
-// ===== Ранг: космонавт и академик — всегда мужской род; волшебник — по полу =====
 function rankText(){
   if(CFG.theme==='magic'){
     var g=(CFG.gender||'').toLowerCase();
@@ -633,7 +627,7 @@ function init(){
   document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
   var ev=EVENTS[CFG.event]||EVENTS.default;
   document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
-  document.title='Элементкрафт v24 — '+title;
+  document.title='Элементкрафт v24.1 — '+title;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
