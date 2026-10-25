@@ -3,34 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v22</title>
+<title>Элементкрафт v23</title>
 <style>
+:root { --ui:#16213e; --accent:#4ecca3; --modal-bg:#16213e; --modal-border:#4ecca3; --btn:#4ecca3; --btn-text:#1a1a2e; --grad1:#1a1a2e; --grad2:#16213e; }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
 #game { width:100%; max-width:400px; margin:0 auto; display:flex; flex-direction:column; height:100vh; height:100dvh; }
 #fieldWrap { position:relative; flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; padding:4px; }
-canvas { display:block; background:#87CEEB; border:2px solid #000; }
-#ui { padding:6px; background:#16213e; flex-shrink:0; }
+canvas { display:block; border:2px solid #000; }
+#ui { padding:6px; background:var(--ui); flex-shrink:0; }
 #version { position:fixed; top:5px; right:5px; background:#e94560; color:#fff; padding:3px 8px; border-radius:4px; font-size:11px; z-index:999; }
-#helpBtn { position:fixed; top:5px; left:5px; background:#0f3460; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-size:13px; z-index:999; cursor:pointer; width:auto; margin:0; }
-button { width:100%; padding:8px; margin:3px 0; background:#4ecca3; border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:15px; }
+#helpBtn { position:fixed; top:5px; left:5px; background:var(--ui); color:#fff; border:none; border-radius:4px; padding:3px 8px; font-size:13px; z-index:999; cursor:pointer; width:auto; margin:0; }
+button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var(--btn-text); border:none; border-radius:6px; font-weight:bold; cursor:pointer; font-size:15px; }
 #hotbar { display:flex; gap:4px; overflow-x:auto; min-height:35px; margin:4px 0; }
-.item { background:#0f3460; border:2px solid #4ecca3; border-radius:6px; padding:5px; min-width:40px; text-align:center; cursor:pointer; flex-shrink:0; }
+.item { background:var(--modal-bg); border:2px solid var(--accent); border-radius:6px; padding:5px; min-width:40px; text-align:center; cursor:pointer; flex-shrink:0; }
 .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:100; padding:16px; }
 .overlay.show { display:flex; }
-.modal { background:#16213e; border:2px solid #4ecca3; border-radius:12px; padding:14px; max-width:90%; width:350px; max-height:90%; overflow-y:auto; }
-.modal h2 { color:#4ecca3; text-align:center; margin-bottom:10px; }
+#start { background:linear-gradient(165deg,var(--grad1),var(--grad2)); }
+#cover { width:min(94%,440px); text-align:center; }
+#coverEmblem { margin:0 auto 10px; }
+#coverTitle { font-size:34px; letter-spacing:4px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,0.5); margin-bottom:6px; }
+#coverSub { font-size:20px; color:var(--accent); font-weight:bold; margin-bottom:10px; }
+#coverRank { font-size:12px; color:#aaa; letter-spacing:2px; margin-bottom:14px; }
+#coverFrom { font-size:16px; color:var(--accent); margin-bottom:10px; font-weight:bold; }
+#coverGreet { font-size:18px; margin-bottom:18px; }
+#cover button { font-size:18px; padding:12px; }
+#cover .ghost { background:transparent; color:var(--accent); border:2px solid var(--accent); }
+.modal { background:var(--modal-bg); border:2px solid var(--modal-border); border-radius:12px; padding:14px; max-width:90%; width:350px; max-height:90%; overflow-y:auto; }
+.modal h2 { color:var(--accent); text-align:center; margin-bottom:10px; }
 .modal p { margin-bottom:6px; line-height:1.35; font-size:14px; }
-.modal button { background:#4ecca3; color:#1a1a2e; }
+.modal button { background:var(--btn); color:var(--btn-text); }
 .hidden { display:none !important; }
-#craftHotbar { display:flex; gap:4px; overflow-x:auto; min-height:35px; margin:12px 0; padding:8px; background:#0f3460; border-radius:6px; }
+#craftHotbar { display:flex; gap:4px; overflow-x:auto; min-height:35px; margin:12px 0; padding:8px; background:var(--modal-bg); border-radius:6px; }
 .success { animation:successPulse 0.6s ease-in-out; }
 @keyframes successPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
 .star { position:fixed; font-size:30px; animation:fall 2s linear; z-index:200; pointer-events:none; }
 @keyframes fall { 0% { transform:translateY(-100px) rotate(0deg); opacity:1; } 100% { transform:translateY(100vh) rotate(720deg); opacity:0; } }
 .firework { position:fixed; width:6px; height:6px; border-radius:50%; animation:explode 1.5s ease-out forwards; z-index:300; pointer-events:none; }
 @keyframes explode { 0% { transform:scale(0); opacity:1; } 100% { transform:scale(20); opacity:0; } }
-.molecule { display:flex; align-items:center; justify-content:center; margin:8px 0; padding:10px; background:#0f3460; border-radius:12px; }
+.molecule { display:flex; align-items:center; justify-content:center; margin:8px 0; padding:10px; background:var(--modal-bg); border-radius:12px; }
 .molecule svg { max-width:85%; height:auto; }
 .confetti { position:fixed; width:10px; height:10px; top:-10px; animation:confettiFall 3s linear forwards; z-index:250; pointer-events:none; }
 @keyframes confettiFall { 0% { transform:translateY(0) rotate(0deg); opacity:1; } 100% { transform:translateY(100vh) rotate(720deg); opacity:0; } }
@@ -44,7 +55,7 @@ button { width:100%; padding:8px; margin:3px 0; background:#4ecca3; border:none;
 @keyframes hintBounce { 0%,100% { margin-top:0; } 50% { margin-top:8px; } }
 #rotateGuard { position:fixed; top:0; left:0; width:100%; height:100%; background:#1a1a2e; z-index:999; display:none; align-items:center; justify-content:center; text-align:center; padding:20px; font-size:18px; }
 @media (orientation:landscape) and (max-height:480px) and (max-width:899px) { #rotateGuard { display:flex; } }
-.elCard { background:#0f3460; border-radius:8px; padding:10px; margin-bottom:8px; font-size:14px; }
+.elCard { background:var(--modal-bg); border-radius:8px; padding:10px; margin-bottom:8px; font-size:14px; }
 @media (min-width:768px) and (max-width:899px) {
   #game { max-width:640px; }
   #fieldWrap { padding:10px; }
@@ -70,7 +81,7 @@ body.desk #hintPointer { font-size:46px; }
 </head>
 <body>
 
-<div id="version">v22 · <span id="vw">-</span>px</div>
+<div id="version">v23 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -89,11 +100,21 @@ body.desk #hintPointer { font-size:46px; }
 <div id="rotateGuard">📱 Поверни телефон вертикально —<br><span id="rotateText">лаборатория так не работает!</span></div>
 
 <div class="overlay show" id="start">
+  <div id="cover">
+    <div id="coverEmblem"></div>
+    <div id="coverTitle">ЭЛЕМЕНТКРАФТ</div>
+    <div id="coverSub"></div>
+    <div id="coverRank"></div>
+    <div id="coverFrom" class="hidden"></div>
+    <div id="coverGreet"></div>
+    <button onclick="startGame()">НАЧАТЬ МИССИЮ</button>
+    <button class="ghost" onclick="openHowto()">КАК ИГРАТЬ?</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="howtoModal">
   <div class="modal">
-    <h2>ЭЛЕМЕНТКРАФТ</h2>
-    <p style="text-align:center"><b id="labTitle">Лаборатория</b></p>
-    <p style="text-align:center; color:#aaa; font-size:13px;" id="rankLine">Уровень допуска: ЮНЫЙ АКАДЕМИК</p>
-    <p style="margin-top:12px;"><b id="greetLine">Привет!</b></p>
+    <h2>КАК ИГРАТЬ</h2>
     <p id="mentorLine"></p>
     <p><b id="introQ"></b></p>
     <p id="introA"></p>
@@ -102,8 +123,7 @@ body.desk #hintPointer { font-size:46px; }
     <p id="step2"></p>
     <p id="step3"></p>
     <p id="step4"></p>
-    <p style="color:#4ecca3; font-weight:bold; text-align:center; margin-top:12px;">Готов начать?</p>
-    <button onclick="startGame()">НАЧАТЬ МИССИЮ</button>
+    <button onclick="closeHowto()">ПОНЯТНО!</button>
   </div>
 </div>
 
@@ -116,7 +136,7 @@ body.desk #hintPointer { font-size:46px; }
     <div id="craftHotbar"></div>
     <button id="createBtn" onclick="doCraft()">СОЗДАТЬ</button>
     <button onclick="clearSlots()" style="background:#ffa500; color:#000;">ОЧИСТИТЬ СЛОТЫ</button>
-    <button id="closeCraftBtn" onclick="closeCraft()" style="background:#0f3460; color:#fff;">Закрыть</button>
+    <button id="closeCraftBtn" onclick="closeCraft()" style="background:var(--ui); color:#fff;">Закрыть</button>
   </div>
 </div>
 
@@ -124,7 +144,7 @@ body.desk #hintPointer { font-size:46px; }
   <div class="modal success">
     <h2 style="font-size:26px;">🎉 ОТЛИЧНО!</h2>
     <div id="bigEmoji"></div>
-    <p id="successText" style="font-size:17px; text-align:center; color:#4ecca3; font-weight:bold;"></p>
+    <p id="successText" style="font-size:17px; text-align:center; color:var(--accent); font-weight:bold;"></p>
     <div id="moleculeDisplay"></div>
     <p id="successFact" style="text-align:center; font-size:14px;"></p>
     <button onclick="closeSuccess()">ПРОДОЛЖИТЬ</button>
@@ -157,8 +177,9 @@ body.desk #hintPointer { font-size:46px; }
 
 <div class="overlay hidden" id="finalModal">
   <div class="modal" style="text-align:center;">
-    <h2 style="font-size:28px;">🚀 ПОЕХАЛИ!</h2>
-    <p id="finalLine" style="font-size:17px; color:#4ecca3; font-weight:bold;"></p>
+    <h2 id="finalH2" style="font-size:28px;">🚀 ПОЕХАЛИ!</h2>
+    <p id="finalFrom" style="font-size:15px; color:var(--accent); font-weight:bold;" class="hidden"></p>
+    <p id="finalLine" style="font-size:17px; color:var(--accent); font-weight:bold;"></p>
     <p id="finalReward" style="font-size:15px; color:#ffd43b; font-weight:bold;"></p>
     <div id="videoContainer"></div>
     <button onclick="closeFinal()">ЗАКРЫТЬ</button>
@@ -167,7 +188,7 @@ body.desk #hintPointer { font-size:46px; }
 
 <script>
 // ===== CFG: всё из URL (Zero-Storage) =====
-const CFG = { name:'', videoUrl:'', hints:'1', event:'', theme:'lab' };
+const CFG = { name:'', videoUrl:'', hints:'1', event:'', theme:'lab', skin:'', gender:'', from:'' };
 
 function convertToEmbedUrl(u){
   if(!u) return null;
@@ -190,11 +211,14 @@ function convertToEmbedUrl(u){
   if(p.get('hints')==='0') CFG.hints='0';
   if(p.get('event')) CFG.event=p.get('event');
   if(p.get('theme')==='space'||p.get('theme')==='magic') CFG.theme=p.get('theme');
+  if(p.get('skin')!==null && p.get('skin')!=='') CFG.skin=p.get('skin');
+  if(p.get('gender')) CFG.gender=p.get('gender');
+  if(p.get('from')) CFG.from=p.get('from');
   if(!CFG.name) CFG.name='Друг';
 })();
 var hintsOn = CFG.hints!=='0';
 
-// ===== ТЕМА ПО УМОЛЧАНИЮ: ЛАБОРАТОРИЯ (путь без ?theme= совпадает с v18) =====
+// ===== СКЛАД ТЕКСТОВ ТЕМ =====
 let EL = {H:'#a5d8ff',O:'#d0ebff',C:'#495057',N:'#b197fc',Na:'#dee2e6',Cl:'#69db7c',Si:'#ffd43b',S:'#ffe066',Ca:'#f8f9fa',Fe:'#adb5bd',Cu:'#e8590c',Zn:'#74c0fc'};
 let META = {
 H:{e:'🎈',ru:'Водород',f:'Легче воздуха! Им летают шарики.'},
@@ -219,7 +243,6 @@ let REC = [
 ];
 let PRAISE = ['Блестяще, коллега!','Точно по таблице!','Химия тебя любит!','Менделеев одобряет!','Нобелевка приближается!','Идеальная реакция!','Ты настоящий учёный!'];
 
-// ===== ПАК «КОСМОС» (подменяет дефолт только при ?theme=space) =====
 const SPACE_PACK = {
   EL:{H:'#a5d8ff',He:'#f3d9fa',O:'#d0ebff',C:'#495057',N:'#b197fc',Si:'#ffd43b',Fe:'#adb5bd',Ni:'#868e96',Mg:'#63e6be',Al:'#91a7ff',Ti:'#3bc9db',Au:'#f08c00'},
   META:{
@@ -246,7 +269,6 @@ const SPACE_PACK = {
   PRAISE:['Поехали!','Космос ближе, чем кажется!','Королёв одобряет!','Стыковка идеальная!','Ты рождён для космоса!','Орбита рассчитана верно!','Гагарин бы улыбнулся!']
 };
 
-// ===== ПАК «МАГИЯ» (подменяет дефолт только при ?theme=magic) =====
 const MAGIC_PACK = {
   EL:{Ch:'#f3d9fa',Z:'#ffd43b',K:'#a5d8ff',L:'#d0ebff',R:'#63e6be',V:'#b197fc',Zv:'#dee2e6',S:'#ffe066',Kor:'#f08c00',Ser:'#adb5bd'},
   META:{
@@ -274,41 +296,87 @@ const MAGIC_PACK = {
 const THEME_STR = {
   lab:{
     mentor:'Менделеев',
-    mentorLine:'Я — <b style="color:#4ecca3;">Дмитрий Менделеев</b>, создатель периодической таблицы химических элементов. Сегодня эта лаборатория становится твоей!',
+    mentorLine:'Я — <b style="color:var(--accent);">Дмитрий Менделеев</b>, создатель периодической таблицы химических элементов. Сегодня эта лаборатория становится твоей!',
     introQ:'Что такое химические элементы?',
-    introA:'Всё вокруг — воздух, вода, земля, даже ты сам — состоит из крошечных кубиков, которые называются <b style="color:#4ecca3;">химическими элементами</b>. Это как Lego, из которых собран весь мир!',
+    introA:'Всё вокруг — воздух, вода, земля, даже ты сам — состоит из крошечных кубиков, которые называются <b style="color:var(--accent);">химическими элементами</b>. Это как Lego, из которых собран весь мир!',
     step1:'1. <b>Тапай</b> по цветным блокам с буквами — добывай элементы',
     step2:'2. <b>Открой лабораторию</b> и соедини элементы по формуле',
     step3:'3. <b>Создавай</b> настоящие вещества: воду, соль, стекло...',
     step4:'4. <b>Запусти ракету</b> в конце!',
-    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleWord:'Лаборатория', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ'
+    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleTpl:'Лаборатория {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false,
+    emblem:'<svg viewBox="0 0 120 120" width="110" height="110"><path d="M45 15h30v30l25 45a10 10 0 0 1-9 15H29a10 10 0 0 1-9-15l25-45z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="52" cy="85" r="6" fill="var(--accent)"/><circle cx="68" cy="75" r="4" fill="var(--accent)"/><circle cx="60" cy="95" r="5" fill="var(--accent)"/></svg>'
   },
   space:{
     mentor:'Королёв',
-    mentorLine:'Я — <b style="color:#4ecca3;">Сергей Королёв</b>, главный конструктор ракет и космических кораблей. Сегодня этот сборочный цех становится твоим!',
+    mentorLine:'Я — <b style="color:var(--accent);">Сергей Королёв</b>, главный конструктор ракет и космических кораблей. Сегодня этот сборочный цех становится твоим!',
     introQ:'Из чего строят космические корабли?',
-    introA:'Ракеты и станции собирают из особых материалов: лёгких, прочных, стойких к космическому холоду. Сегодня ты — <b style="color:#4ecca3;">главный строитель космодрома</b>!',
+    introA:'Ракеты и станции собирают из особых материалов: лёгких, прочных, стойких к космическому холоду. Сегодня ты — <b style="color:var(--accent);">главный строитель космодрома</b>!',
     step1:'1. <b>Тапай</b> по цветным блокам — добывай материалы',
     step2:'2. <b>Открой сборочный цех</b> и соедини материалы по схеме',
     step3:'3. <b>Создавай</b> настоящие вещи: воду, атмосферу, иллюминатор...',
     step4:'4. <b>Запусти ракету</b> в конце!',
-    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleWord:'Космодром', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ'
+    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleTpl:'Станция {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false,
+    emblem:'<svg viewBox="0 0 120 120" width="110" height="110"><path d="M60 10c15 15 20 35 20 50l-20 20-20-20c0-15 5-35 20-50z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="60" cy="50" r="10" fill="none" stroke="var(--accent)" stroke-width="5"/><path d="M40 62 25 82l15-5M80 62l15 20-15-5" fill="none" stroke="var(--accent)" stroke-width="6"/><path d="M52 92l8 16 8-16" fill="none" stroke="var(--accent)" stroke-width="6"/></svg>'
   },
   magic:{
     mentor:'Фея',
-    mentorLine:'Я — <b style="color:#4ecca3;">Фея</b>, хранительница волшебного котла. Сегодня этот котёл становится твоим!',
+    mentorLine:'Я — <b style="color:var(--accent);">Фея</b>, хранительница волшебного котла. Сегодня этот котёл становится твоим!',
     introQ:'Что такое магические ингредиенты?',
-    introA:'Волшебные зелья варят из особых ингредиентов: звёздной пыли, кристаллов, лунного света. Сегодня ты — <b style="color:#4ecca3;">юный волшебник</b>!',
+    introA:'Волшебные зелья варят из особых ингредиентов: звёздной пыли, кристаллов, лунного света. Сегодня ты — <b style="color:var(--accent);">юный волшебник</b>!',
     step1:'1. <b>Тапай</b> по цветным блокам — собирай ингредиенты',
     step2:'2. <b>Открой волшебный котёл</b> и соедини ингредиенты по рецепту',
     step3:'3. <b>Создавай</b> настоящие зелья: дружбы, смелости, удачи...',
     step4:'4. <b>Сотвори заклинание праздника</b> в конце!',
-    place:'ВОЛШЕБНЫЙ КОТЁЛ', placeLow:'волшебный котёл', rank:'ЮНАЯ ВОЛШЕБНИЦА / ЮНЫЙ ВОЛШЕБНИК', titleWord:'Академия Волшебства', cta:'✨ СОТВОРИТЬ ЗАКЛИНАНИЕ ПРАЗДНИКА!'
+    place:'ВОЛШЕБНЫЙ КОТЁЛ', placeLow:'волшебный котёл', rank:'ЮНАЯ ВОЛШЕБНИЦА / ЮНЫЙ ВОЛШЕБНИК', titleTpl:'Академия Волшебства', cta:'✨ СОТВОРИТЬ ЗАКЛИНАНИЕ ПРАЗДНИКА!', finalH2:'✨ ЧУДО СВЕРШИЛОСЬ!', names:true, emojiTile:true,
+    emblem:'<svg viewBox="0 0 120 120" width="110" height="110"><path d="M25 55h70c0 25-15 45-35 45S25 80 25 55z" fill="none" stroke="var(--accent)" stroke-width="6"/><path d="M20 55h80" stroke="var(--accent)" stroke-width="6"/><path d="M45 42l3-8M60 40V30M75 42l-3-8" stroke="var(--accent)" stroke-width="5"/><path d="M50 18l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="var(--accent)"/><path d="M80 12l1.5 4.5 4.5 1.5-4.5 1.5-1.5 4.5-1.5-4.5-4.5-1.5 4.5-1.5z" fill="var(--accent)"/></svg>'
   }
 };
 const T = THEME_STR[CFG.theme] || THEME_STR.lab;
 if(CFG.theme==='space'){ EL=SPACE_PACK.EL; META=SPACE_PACK.META; REC=SPACE_PACK.REC; PRAISE=SPACE_PACK.PRAISE; }
 if(CFG.theme==='magic'){ EL=MAGIC_PACK.EL; META=MAGIC_PACK.META; REC=MAGIC_PACK.REC; PRAISE=MAGIC_PACK.PRAISE; }
+
+// ===== СКИНЫ: 3 девичьих (0-2), 3 мальчишеских (3-5). Родитель НЕ выбирает: =====
+// ===== скин зашивается в ссылку при заказе (?skin=N); без него — сид от ссылки =====
+const SKINS = [
+  {g:1,name:'Рассвет', empty:'#f6d9e6', ui:'#4a2b45', accent:'#f783ac', modal:'#3d2340', border:'#f783ac', btn:'#f783ac', btnText:'#fff', grad1:'#5a2a4a', grad2:'#2b1430'},
+  {g:1,name:'Мятная мечта', empty:'#d9f2e6', ui:'#2b4a44', accent:'#63e6be', modal:'#23403a', border:'#63e6be', btn:'#63e6be', btnText:'#08302a', grad1:'#1f4a40', grad2:'#122b26'},
+  {g:1,name:'Лаванда', empty:'#e6dcf7', ui:'#3a2b52', accent:'#b197fc', modal:'#302348', border:'#b197fc', btn:'#b197fc', btnText:'#241448', grad1:'#3a2b62', grad2:'#201636'},
+  {g:0,name:'Шторм', empty:'#1b2447', ui:'#101635', accent:'#74c0fc', modal:'#141b3d', border:'#74c0fc', btn:'#74c0fc', btnText:'#0b2447', grad1:'#10204a', grad2:'#0a1026'},
+  {g:0,name:'Графит', empty:'#2a2d33', ui:'#1a1d23', accent:'#ffa500', modal:'#202329', border:'#ffa500', btn:'#ffa500', btnText:'#241a00', grad1:'#2a2d33', grad2:'#14161a'},
+  {g:0,name:'Тайга', empty:'#12332a', ui:'#0e2b23', accent:'#69db7c', modal:'#12332a', border:'#69db7c', btn:'#69db7c', btnText:'#0b3020', grad1:'#14402f', grad2:'#0a2018'}
+];
+function hashStr(s){
+  var h=5381;
+  for(var i=0;i<s.length;i++){ h=((h<<5)+h+s.charCodeAt(i))|0; }
+  return Math.abs(h);
+}
+function pickSkin(){
+  var idx;
+  if(CFG.skin!=='' && !isNaN(parseInt(CFG.skin))){
+    idx=Math.min(5,Math.max(0,parseInt(CFG.skin)));
+  } else {
+    var gRaw=(CFG.gender||'').toLowerCase();
+    var g;
+    if(gRaw==='g'||gRaw==='girl'||gRaw==='f') g=1;
+    else if(gRaw==='b'||gRaw==='boy'||gRaw==='m') g=0;
+    else g=(CFG.theme==='magic')?1:0;
+    var set=g?[0,1,2]:[3,4,5];
+    idx=set[hashStr(CFG.name+'|'+CFG.theme+'|'+CFG.from)%3];
+  }
+  return SKINS[idx];
+}
+const SKIN = pickSkin();
+(function(){
+  var r=document.documentElement.style;
+  r.setProperty('--ui',SKIN.ui);
+  r.setProperty('--accent',SKIN.accent);
+  r.setProperty('--modal-bg',SKIN.modal);
+  r.setProperty('--modal-border',SKIN.border);
+  r.setProperty('--btn',SKIN.btn);
+  r.setProperty('--btn-text',SKIN.btnText);
+  r.setProperty('--grad1',SKIN.grad1);
+  r.setProperty('--grad2',SKIN.grad2);
+})();
 
 const EVENTS = {
   birthday:{emoji:'🎂',label:'с Днём Рождения'},
@@ -319,10 +387,28 @@ const EVENTS = {
 };
 const FONT = 'Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif';
 
+// ===== Склонение отправителя: «Квест от бабушки» =====
+function genitive(s){
+  s=String(s||'').trim();
+  if(!s) return '';
+  if(!/^[А-Яа-яЁё\- ]+$/.test(s)) return s;
+  if(/(ая|яя)$/.test(s)) return s.slice(0,-2)+(/яя$/.test(s)?'ей':'ой');
+  if(/(ый|ий)$/.test(s)) return s.slice(0,-2)+(/ий$/.test(s)?'его':'ого');
+  if(/ь$/.test(s)) return s.slice(0,-1)+'и';
+  if(/я$/.test(s)) return s.slice(0,-1)+'и';
+  if(/а$/.test(s)) return s.slice(0,-1)+(/[кгхжшчщ]$/.test(s.slice(-2,-1))?'и':'ы');
+  if(/[^аеёиоуыэюя\s]$/.test(s)) return s+'а';
+  return s;
+}
+
 let world=[], inv={}, mission=0, slots=[null,null,null,null,null], pendingPraise=false, praiseDone=false;
 const cvs=document.getElementById('cvs'), ctx=cvs.getContext('2d');
 const ROWS=8, COLS=8;
 const TILE=40;
+
+function recStr(rec){
+  return T.names ? rec.i.map(s=>META[s].ru).join(' + ') : rec.i.join(' + ');
+}
 
 function shuffle(arr){
   for(let i=arr.length-1;i>0;i--){
@@ -430,7 +516,7 @@ function getHintTarget(){
 
 function updateHint(){
   const hp=document.getElementById('hintPointer');
-  const mods=['start','successModal','praiseModal','infoModal','galleryModal','finalModal'];
+  const mods=['start','howtoModal','successModal','praiseModal','infoModal','galleryModal','finalModal'];
   for(const id of mods){
     if(!document.getElementById(id).classList.contains('hidden')){ hp.classList.add('hidden'); return; }
   }
@@ -484,9 +570,16 @@ function init(){
   mission=0;
   pendingPraise=false;
   praiseDone=false;
-  document.getElementById('labTitle').textContent=T.titleWord+' '+CFG.name;
-  document.getElementById('rankLine').textContent='Уровень допуска: '+T.rank;
-  document.getElementById('greetLine').textContent='Привет, '+CFG.name+'!';
+  const title=T.titleTpl.replace('{name}',CFG.name);
+  document.getElementById('coverSub').textContent=title;
+  document.getElementById('coverRank').textContent='Уровень допуска: '+T.rank;
+  document.getElementById('coverGreet').textContent='Привет, '+CFG.name+'!';
+  document.getElementById('coverEmblem').innerHTML=T.emblem;
+  const fromG=genitive(CFG.from);
+  const cf=document.getElementById('coverFrom');
+  if(fromG){ cf.textContent='Квест от '+fromG; cf.classList.remove('hidden'); }
+  const ff=document.getElementById('finalFrom');
+  if(fromG){ ff.textContent='Поздравление от '+fromG; ff.classList.remove('hidden'); }
   document.getElementById('mentorLine').innerHTML=T.mentorLine;
   document.getElementById('introQ').textContent=T.introQ;
   document.getElementById('introA').innerHTML=T.introA;
@@ -497,10 +590,11 @@ function init(){
   document.getElementById('labBtn').textContent=T.place;
   document.getElementById('craftTitle').textContent=T.place;
   document.getElementById('rotateText').textContent=T.placeLow+' так не работает!';
+  document.getElementById('finalH2').textContent=T.finalH2;
   document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
   var ev=EVENTS[CFG.event]||EVENTS.default;
   document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
-  document.title='Элементкрафт v22 — '+T.titleWord+' '+CFG.name;
+  document.title='Элементкрафт v23 — '+title;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
@@ -511,20 +605,27 @@ function init(){
 function draw(){
   const k=cvs.width/320;
   ctx.setTransform(k,0,0,k,0,0);
-  ctx.fillStyle='#87CEEB'; ctx.fillRect(0,0,320,320);
+  ctx.fillStyle=SKIN.empty; ctx.fillRect(0,0,320,320);
   const ht=getHintTarget();
   for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
-    ctx.fillStyle='#8d6e63'; ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
+    ctx.fillStyle=SKIN.empty; ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
     ctx.strokeStyle='#000'; ctx.lineWidth=1; ctx.strokeRect(x*TILE,y*TILE,TILE,TILE);
     if(world[y][x]){
       ctx.fillStyle=EL[world[y][x]];
       ctx.fillRect(x*TILE+2,y*TILE+2,TILE-4,TILE-4);
       ctx.fillStyle='#000';
-      ctx.font='bold 16px '+FONT;
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(world[y][x],x*TILE+TILE/2,y*TILE+14);
-      ctx.font='13px '+FONT;
-      ctx.fillText(META[world[y][x]].e,x*TILE+TILE/2,y*TILE+29);
+      if(T.emojiTile){
+        ctx.font='18px '+FONT;
+        ctx.fillText(META[world[y][x]].e,x*TILE+TILE/2,y*TILE+16);
+        ctx.font='bold 10px '+FONT;
+        ctx.fillText(world[y][x],x*TILE+TILE/2,y*TILE+31);
+      } else {
+        ctx.font='bold 16px '+FONT;
+        ctx.fillText(world[y][x],x*TILE+TILE/2,y*TILE+14);
+        ctx.font='13px '+FONT;
+        ctx.fillText(META[world[y][x]].e,x*TILE+TILE/2,y*TILE+29);
+      }
     }
   }
   if(ht && ht.type==='field'){
@@ -569,7 +670,11 @@ function renderItems(containerId){
     const d=document.createElement('div');
     d.className='item';
     d.dataset.sym=k;
-    d.innerHTML='<b style="color:'+EL[k]+'; font-size:18px;">'+k+'</b> '+META[k].e+'<br><small>'+v+'</small>';
+    if(T.emojiTile){
+      d.innerHTML='<div style="font-size:18px;">'+META[k].e+'</div><small>'+k+' · '+v+'</small>';
+    } else {
+      d.innerHTML='<b style="color:'+EL[k]+'; font-size:18px;">'+k+'</b> '+META[k].e+'<br><small>'+v+'</small>';
+    }
     h.appendChild(d);
   }
 }
@@ -640,6 +745,14 @@ function closeInfo(){
   document.getElementById('infoModal').classList.remove('show');
   updateHint();
 }
+function openHowto(){
+  document.getElementById('howtoModal').classList.remove('hidden');
+  document.getElementById('howtoModal').classList.add('show');
+}
+function closeHowto(){
+  document.getElementById('howtoModal').classList.add('hidden');
+  document.getElementById('howtoModal').classList.remove('show');
+}
 function openGallery(){
   let html='';
   for(const k of Object.keys(META)){
@@ -678,7 +791,7 @@ function openCraft(){
   renderSlots();
   renderCraftHot();
   const rec=REC[mission];
-  if(rec) document.getElementById('craftHint').textContent='Задание: '+rec.n+' ('+rec.i.join(' + ')+')';
+  if(rec) document.getElementById('craftHint').textContent='Задание: '+rec.n+' ('+recStr(rec)+')';
   updateHint();
 }
 
@@ -692,7 +805,9 @@ function renderSlots(){
     d.style.height='55px';
     d.dataset.idx=i;
     if(el){
-      d.innerHTML='<b style="color:'+EL[el]+'; font-size:22px;">'+el+'</b>';
+      d.innerHTML=T.emojiTile
+        ? '<div style="font-size:24px;">'+META[el].e+'</div>'
+        : '<b style="color:'+EL[el]+'; font-size:22px;">'+el+'</b>';
     }
     s.appendChild(d);
   });
@@ -746,13 +861,13 @@ function doCraft(){
     renderHot();
     if(mission>=REC.length){
       setTimeout(()=>{
-        document.getElementById('msg').innerHTML='<b>'+T.cta+'</b> Нажми кнопку!';
+        document.getElementById('msg').innerHTML='<b>'+T.cta+'</b>';
         if(!document.getElementById('rocketBtn')){
           const btn=document.createElement('button');
           btn.id='rocketBtn';
           btn.textContent=T.cta;
           btn.style.background='#e94560';
-          btn.style.fontSize='20px';
+          btn.style.fontSize='18px';
           btn.onclick=launchRocket;
           document.getElementById('ui').appendChild(btn);
         }
@@ -761,7 +876,7 @@ function doCraft(){
     } else {
       const next=REC[mission];
       setTimeout(()=>{
-        document.getElementById('msg').innerHTML='<b>'+T.mentor+':</b> '+praise+' Теперь создай '+next.n+' ('+next.i.join(' + ')+')';
+        document.getElementById('msg').innerHTML='<b>'+T.mentor+':</b> '+praise+' Теперь создай '+next.n+' ('+recStr(next)+')';
       },1000);
     }
   } else {
@@ -783,7 +898,7 @@ function drawMolecule(type, atoms){
       <text x="60" y="45" text-anchor="middle" fill="#000" font-size="20" font-weight="bold">H</text>
       <text x="140" y="45" text-anchor="middle" fill="#000" font-size="20" font-weight="bold">H</text>
       <text x="100" y="95" text-anchor="middle" fill="#000" font-size="20" font-weight="bold">O</text>
-      <text x="100" y="130" text-anchor="middle" fill="#4ecca3" font-size="14">Угол H-O-H ≈ 104.5°</text>
+      <text x="100" y="130" text-anchor="middle" fill="${SKIN.accent}" font-size="14">Угол H-O-H ≈ 104.5°</text>
     </svg>`;
     container.innerHTML=`<div class="molecule">${svg}</div>`;
   } else if(type==='fuel'){
@@ -894,11 +1009,11 @@ function launchRocket(){
   const vc=document.getElementById('videoContainer');
   const v=CFG.videoUrl;
   if(!v){
-    vc.innerHTML='<p style="color:#4ecca3;">🎬 Видео-поздравление будет здесь!</p>';
+    vc.innerHTML='<p style="color:var(--accent);">🎬 Видео-поздравление будет здесь!</p>';
   } else if(v.includes('<iframe')){
     vc.innerHTML=v;
   } else if(v.includes('embed')||v.includes('/preview')){
-    vc.innerHTML='<a href="'+v+'" target="_blank" rel="noopener" style="display:block;margin:0 0 8px;color:#4ecca3;font-size:14px;text-decoration:underline;">🔗 Открыть видео в новой вкладке</a><iframe src="'+v+'" width="100%" height="400" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+    vc.innerHTML='<a href="'+v+'" target="_blank" rel="noopener" style="display:block;margin:0 0 8px;color:var(--accent);font-size:14px;text-decoration:underline;">🔗 Открыть видео в новой вкладке</a><iframe src="'+v+'" width="100%" height="400" frameborder="0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
   } else {
     vc.innerHTML='<video id="finalVideo" controls autoplay playsinline style="width:100%; border-radius:12px;"><source src="'+v+'" type="video/mp4">Ваш браузер не поддерживает видео.</video>';
   }
@@ -938,14 +1053,14 @@ function updateMissionText(){
   if(rocketBtn) rocketBtn.remove();
   if(mission<REC.length){
     const rec=REC[mission];
-    document.getElementById('msg').innerHTML='<b>'+T.mentor+':</b> Тапай по цветным блокам! Создай '+rec.n+' ('+rec.i.join(' + ')+')';
+    document.getElementById('msg').innerHTML='<b>'+T.mentor+':</b> Тапай по цветным блокам! Создай '+rec.n+' ('+recStr(rec)+')';
   } else {
-    document.getElementById('msg').innerHTML='<b>'+T.cta+'</b> Нажми кнопку!';
+    document.getElementById('msg').innerHTML='<b>'+T.cta+'</b>';
     const btn=document.createElement('button');
     btn.id='rocketBtn';
     btn.textContent=T.cta;
     btn.style.background='#e94560';
-    btn.style.fontSize='20px';
+    btn.style.fontSize='18px';
     btn.onclick=launchRocket;
     document.getElementById('ui').appendChild(btn);
   }
