@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v23</title>
+<title>Элементкрафт v24</title>
 <style>
 :root { --ui:#16213e; --accent:#4ecca3; --modal-bg:#16213e; --modal-border:#4ecca3; --btn:#4ecca3; --btn-text:#1a1a2e; --grad1:#1a1a2e; --grad2:#16213e; }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { font-family:Arial, "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif; background:#1a1a2e; color:#fff; overflow:hidden; height:100vh; height:100dvh; }
 #game { width:100%; max-width:400px; margin:0 auto; display:flex; flex-direction:column; height:100vh; height:100dvh; }
-#fieldWrap { position:relative; flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; padding:4px; }
+#fieldWrap { position:relative; flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; padding:4px; background-size:cover; background-position:center; }
 canvas { display:block; border:2px solid #000; }
 #ui { padding:6px; background:var(--ui); flex-shrink:0; }
 #version { position:fixed; top:5px; right:5px; background:#e94560; color:#fff; padding:3px 8px; border-radius:4px; font-size:11px; z-index:999; }
@@ -19,14 +19,20 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
 .item { background:var(--modal-bg); border:2px solid var(--accent); border-radius:6px; padding:5px; min-width:40px; text-align:center; cursor:pointer; flex-shrink:0; }
 .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:100; padding:16px; }
 .overlay.show { display:flex; }
-#start { background:linear-gradient(165deg,var(--grad1),var(--grad2)); }
-#cover { width:min(94%,440px); text-align:center; }
+#start { overflow:hidden; }
+#start.bg-lab { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-lab.jpg') center top / cover no-repeat; }
+#start.bg-space { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-space.jpg') center top / cover no-repeat; }
+#start.bg-magic { background:linear-gradient(to bottom, rgba(8,6,16,0.55), rgba(8,6,16,0.25) 45%, rgba(8,6,16,0.5)), url('https://quest.prostors.ru/img/bg-magic.jpg') center top / cover no-repeat; }
+#particles { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.particle { position:absolute; animation:float 4s infinite ease-in-out; opacity:0.6; }
+@keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-20px) rotate(180deg); } }
+#cover { width:min(94%,440px); text-align:center; position:relative; z-index:1; }
 #coverEmblem { margin:0 auto 10px; }
-#coverTitle { font-size:34px; letter-spacing:4px; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,0.5); margin-bottom:6px; }
-#coverSub { font-size:20px; color:var(--accent); font-weight:bold; margin-bottom:10px; }
-#coverRank { font-size:12px; color:#aaa; letter-spacing:2px; margin-bottom:14px; }
-#coverFrom { font-size:16px; color:var(--accent); margin-bottom:10px; font-weight:bold; }
-#coverGreet { font-size:18px; margin-bottom:18px; }
+#coverTitle { font-size:38px; letter-spacing:4px; color:#fff; text-shadow:0 2px 20px rgba(0,0,0,0.9), 0 0 40px rgba(255,255,255,0.3); margin-bottom:6px; font-weight:bold; }
+#coverSub { font-size:22px; color:var(--accent); font-weight:bold; margin-bottom:10px; text-shadow:0 1px 10px rgba(0,0,0,0.9); }
+#coverRank { font-size:12px; color:#ddd; letter-spacing:2px; margin-bottom:14px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
+#coverFrom { font-size:16px; color:var(--accent); margin-bottom:10px; font-weight:bold; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
+#coverGreet { font-size:18px; margin-bottom:18px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
 #cover button { font-size:18px; padding:12px; }
 #cover .ghost { background:transparent; color:var(--accent); border:2px solid var(--accent); }
 .modal { background:var(--modal-bg); border:2px solid var(--modal-border); border-radius:12px; padding:14px; max-width:90%; width:350px; max-height:90%; overflow-y:auto; }
@@ -52,7 +58,7 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
 #bigEmoji { font-size:44px; text-align:center; animation:popIn 0.5s ease-out; }
 @keyframes popIn { 0% { transform:scale(0); } 80% { transform:scale(1.2); } 100% { transform:scale(1); } }
 #hintPointer { position:fixed; font-size:32px; z-index:150; pointer-events:none; transform:translate(-50%,-100%); animation:hintBounce 0.8s infinite ease-in-out; filter:drop-shadow(0 0 3px #fff) drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
-@keyframes hintBounce { 0%,100% { margin-top:0; } 50% { margin-top:8px; } }
+@keyframes hintBounce { 0%,100% { margin-top:0; transform:translate(-50%,-100%) scale(1); } 50% { margin-top:6px; transform:translate(-50%,-100%) scale(1.25); } }
 #rotateGuard { position:fixed; top:0; left:0; width:100%; height:100%; background:#1a1a2e; z-index:999; display:none; align-items:center; justify-content:center; text-align:center; padding:20px; font-size:18px; }
 @media (orientation:landscape) and (max-height:480px) and (max-width:899px) { #rotateGuard { display:flex; } }
 .elCard { background:var(--modal-bg); border-radius:8px; padding:10px; margin-bottom:8px; font-size:14px; }
@@ -81,7 +87,7 @@ body.desk #hintPointer { font-size:46px; }
 </head>
 <body>
 
-<div id="version">v23 · <span id="vw">-</span>px</div>
+<div id="version">v24 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -100,6 +106,7 @@ body.desk #hintPointer { font-size:46px; }
 <div id="rotateGuard">📱 Поверни телефон вертикально —<br><span id="rotateText">лаборатория так не работает!</span></div>
 
 <div class="overlay show" id="start">
+  <div id="particles"></div>
   <div id="cover">
     <div id="coverEmblem"></div>
     <div id="coverTitle">ЭЛЕМЕНТКРАФТ</div>
@@ -218,7 +225,7 @@ function convertToEmbedUrl(u){
 })();
 var hintsOn = CFG.hints!=='0';
 
-// ===== СКЛАД ТЕКСТОВ ТЕМ =====
+// ===== ТЕМА ПО УМОЛЧАНИЮ: ЛАБОРАТОРИЯ =====
 let EL = {H:'#a5d8ff',O:'#d0ebff',C:'#495057',N:'#b197fc',Na:'#dee2e6',Cl:'#69db7c',Si:'#ffd43b',S:'#ffe066',Ca:'#f8f9fa',Fe:'#adb5bd',Cu:'#e8590c',Zn:'#74c0fc'};
 let META = {
 H:{e:'🎈',ru:'Водород',f:'Легче воздуха! Им летают шарики.'},
@@ -269,26 +276,27 @@ const SPACE_PACK = {
   PRAISE:['Поехали!','Космос ближе, чем кажется!','Королёв одобряет!','Стыковка идеальная!','Ты рождён для космоса!','Орбита рассчитана верно!','Гагарин бы улыбнулся!']
 };
 
+// ===== ПАК «МАГИЯ»: ингредиенты названы детскими словами (влезают в плитку) =====
 const MAGIC_PACK = {
   EL:{Ch:'#f3d9fa',Z:'#ffd43b',K:'#a5d8ff',L:'#d0ebff',R:'#63e6be',V:'#b197fc',Zv:'#dee2e6',S:'#ffe066',Kor:'#f08c00',Ser:'#adb5bd'},
   META:{
   Ch:{e:'✨',ru:'Чудо',f:'Волшебство начинается с чуда!'},
-  Z:{e:'⭐',ru:'Звёздная пыль',f:'Пыль падающих звёзд — самый редкий ингредиент!'},
-  K:{e:'💎',ru:'Кристалл',f:'Кристаллы хранят силу земли.'},
-  L:{e:'⭕',ru:'Лунный свет',f:'Лунный свет виден только ночью.'},
+  Z:{e:'⭐',ru:'Звезда',f:'Пыль падающих звёзд — самый редкий ингредиент!'},
+  K:{e:'💎',ru:'Алмаз',f:'Алмазы хранят силу земли.'},
+  L:{e:'⭕',ru:'Луна',f:'Лунный свет виден только ночью.'},
   R:{e:'🌊',ru:'Роса',f:'Утренняя роса — слёзы травы.'},
   V:{e:'💨',ru:'Вихрь',f:'Вихрь кружит и смешивает зелья.'},
   Zv:{e:'🔔',ru:'Звон',f:'Звон колокольчика открывает волшебство.'},
-  S:{e:'☀',ru:'Солнечный луч',f:'Солнечный луч теплее любого огня.'},
+  S:{e:'☀',ru:'Луч',f:'Солнечный луч теплее любого огня.'},
   Kor:{e:'👑',ru:'Корона',f:'Корона — символ настоящего волшебника.'},
-  Ser:{e:'⚪',ru:'Серебро',f:'Серебро блестит как луна.'}
+  Ser:{e:'⚪',ru:'Жемчуг',f:'Жемчуг блестит как луна.'}
   },
   REC:[
   {i:['Ch','Ch','R'],r:'friendship',n:'Зелье Дружбы',emo:'⭐',fact:'⭐ Друзья — это чудо, которое всегда рядом!',type:'linear3',atoms:['Ch','R','Ch']},
   {i:['K','Z'],r:'courage',n:'Зелье Смелости',emo:'⚪',fact:'⚪ Смелость — это когда боишься, но всё равно идёшь вперёд!',type:'linear',atoms:['K','Z']},
   {i:['Z','Z','Ch'],r:'luck',n:'Зелье Удачи',emo:'☀',fact:'☀ Удача любит тех, кто верит в себя!',type:'linear3',atoms:['Z','Ch','Z']},
   {i:['L','V'],r:'dreams',n:'Зелье Снов',emo:'⭕',fact:'⭕ Во снах мы видим то, что сердце хочет!',type:'linear',atoms:['L','V']},
-  {i:['Ch','Z','K','L'],r:'celebration',n:'Заклинание Праздника',emo:'✨',fact:'✨ Праздник начинается, когда ты готов волшебничать!',type:'fuel'}
+  {i:['Ch','Z','K','L'],r:'celebration',n:'Заклинание Праздника',emo:'✨',fact:'✨ Праздник начинается, когда ты готов волшебничать!',type:'linear4',atoms:['Ch','Z','K','L']}
   ],
   PRAISE:['Волшебно!','Магия работает!','Фея гордится тобой!','Заклинание удалось!','Ты настоящая волшебница!','Зелье получилось!','Чудо свершилось!']
 };
@@ -303,8 +311,8 @@ const THEME_STR = {
     step2:'2. <b>Открой лабораторию</b> и соедини элементы по формуле',
     step3:'3. <b>Создавай</b> настоящие вещества: воду, соль, стекло...',
     step4:'4. <b>Запусти ракету</b> в конце!',
-    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleTpl:'Лаборатория {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false,
-    emblem:'<svg viewBox="0 0 120 120" width="110" height="110"><path d="M45 15h30v30l25 45a10 10 0 0 1-9 15H29a10 10 0 0 1-9-15l25-45z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="52" cy="85" r="6" fill="var(--accent)"/><circle cx="68" cy="75" r="4" fill="var(--accent)"/><circle cx="60" cy="95" r="5" fill="var(--accent)"/></svg>'
+    place:'ЛАБОРАТОРИЯ', placeLow:'лаборатория', rank:'ЮНЫЙ АКАДЕМИК', titleTpl:'Лаборатория {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false, bg:'img/bg-lab.jpg',
+    emblem:'<svg viewBox="0 0 120 120" width="140" height="140"><path d="M45 15h30v30l25 45a10 10 0 0 1-9 15H29a10 10 0 0 1-9-15l25-45z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="52" cy="85" r="6" fill="var(--accent)"/><circle cx="68" cy="75" r="4" fill="var(--accent)"/><circle cx="60" cy="95" r="5" fill="var(--accent)"/></svg>'
   },
   space:{
     mentor:'Королёв',
@@ -315,27 +323,27 @@ const THEME_STR = {
     step2:'2. <b>Открой сборочный цех</b> и соедини материалы по схеме',
     step3:'3. <b>Создавай</b> настоящие вещи: воду, атмосферу, иллюминатор...',
     step4:'4. <b>Запусти ракету</b> в конце!',
-    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleTpl:'Станция {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false,
-    emblem:'<svg viewBox="0 0 120 120" width="110" height="110"><path d="M60 10c15 15 20 35 20 50l-20 20-20-20c0-15 5-35 20-50z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="60" cy="50" r="10" fill="none" stroke="var(--accent)" stroke-width="5"/><path d="M40 62 25 82l15-5M80 62l15 20-15-5" fill="none" stroke="var(--accent)" stroke-width="6"/><path d="M52 92l8 16 8-16" fill="none" stroke="var(--accent)" stroke-width="6"/></svg>'
+    place:'СБОРОЧНЫЙ ЦЕХ', placeLow:'сборочный цех', rank:'ЮНЫЙ КОСМОНАВТ', titleTpl:'Станция {name}', cta:'🚀 ЗАПУСТИТЬ РАКЕТУ', finalH2:'🚀 ПОЕХАЛИ!', names:false, emojiTile:false, bg:'img/bg-space.jpg',
+    emblem:'<svg viewBox="0 0 120 120" width="140" height="140"><path d="M60 10c15 15 20 35 20 50l-20 20-20-20c0-15 5-35 20-50z" fill="none" stroke="var(--accent)" stroke-width="6"/><circle cx="60" cy="50" r="10" fill="none" stroke="var(--accent)" stroke-width="5"/><path d="M40 62 25 82l15-5M80 62l15 20-15-5" fill="none" stroke="var(--accent)" stroke-width="6"/><path d="M52 92l8 16 8-16" fill="none" stroke="var(--accent)" stroke-width="6"/></svg>'
   },
   magic:{
     mentor:'Фея',
     mentorLine:'Я — <b style="color:var(--accent);">Фея</b>, хранительница волшебного котла. Сегодня этот котёл становится твоим!',
     introQ:'Что такое магические ингредиенты?',
-    introA:'Волшебные зелья варят из особых ингредиентов: звёздной пыли, кристаллов, лунного света. Сегодня ты — <b style="color:var(--accent);">юный волшебник</b>!',
+    introA:'Волшебные зелья варят из особых ингредиентов: звёзд, алмазов, лунного света. Сегодня ты — <b style="color:var(--accent);">юный волшебник</b>!',
     step1:'1. <b>Тапай</b> по цветным блокам — собирай ингредиенты',
     step2:'2. <b>Открой волшебный котёл</b> и соедини ингредиенты по рецепту',
     step3:'3. <b>Создавай</b> настоящие зелья: дружбы, смелости, удачи...',
     step4:'4. <b>Сотвори заклинание праздника</b> в конце!',
-    place:'ВОЛШЕБНЫЙ КОТЁЛ', placeLow:'волшебный котёл', rank:'ЮНАЯ ВОЛШЕБНИЦА / ЮНЫЙ ВОЛШЕБНИК', titleTpl:'Академия Волшебства', cta:'✨ СОТВОРИТЬ ЗАКЛИНАНИЕ ПРАЗДНИКА!', finalH2:'✨ ЧУДО СВЕРШИЛОСЬ!', names:true, emojiTile:true,
-    emblem:'<svg viewBox="0 0 120 120" width="110" height="110"><path d="M25 55h70c0 25-15 45-35 45S25 80 25 55z" fill="none" stroke="var(--accent)" stroke-width="6"/><path d="M20 55h80" stroke="var(--accent)" stroke-width="6"/><path d="M45 42l3-8M60 40V30M75 42l-3-8" stroke="var(--accent)" stroke-width="5"/><path d="M50 18l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="var(--accent)"/><path d="M80 12l1.5 4.5 4.5 1.5-4.5 1.5-1.5 4.5-1.5-4.5-4.5-1.5 4.5-1.5z" fill="var(--accent)"/></svg>'
+    place:'ВОЛШЕБНЫЙ КОТЁЛ', placeLow:'волшебный котёл', rank:'', titleTpl:'Академия Волшебства', cta:'✨ СОТВОРИТЬ ЗАКЛИНАНИЕ ПРАЗДНИКА!', finalH2:'✨ ЧУДО СВЕРШИЛОСЬ!', names:true, emojiTile:true, bg:'img/bg-magic.jpg',
+    emblem:'<svg viewBox="0 0 120 120" width="140" height="140"><path d="M25 55h70c0 25-15 45-35 45S25 80 25 55z" fill="none" stroke="var(--accent)" stroke-width="6"/><path d="M20 55h80" stroke="var(--accent)" stroke-width="6"/><path d="M45 42l3-8M60 40V30M75 42l-3-8" stroke="var(--accent)" stroke-width="5"/><path d="M50 18l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" fill="var(--accent)"/><path d="M80 12l1.5 4.5 4.5 1.5-4.5 1.5-1.5 4.5-1.5-4.5-4.5-1.5 4.5-1.5z" fill="var(--accent)"/></svg>'
   }
 };
 const T = THEME_STR[CFG.theme] || THEME_STR.lab;
 if(CFG.theme==='space'){ EL=SPACE_PACK.EL; META=SPACE_PACK.META; REC=SPACE_PACK.REC; PRAISE=SPACE_PACK.PRAISE; }
 if(CFG.theme==='magic'){ EL=MAGIC_PACK.EL; META=MAGIC_PACK.META; REC=MAGIC_PACK.REC; PRAISE=MAGIC_PACK.PRAISE; }
 
-// ===== СКИНЫ: 3 девичьих (0-2), 3 мальчишеских (3-5). Родитель НЕ выбирает: =====
+// ===== СКИНЫ: 3 девичьих (0-2), 3 мальчишеских (3-5). РОДИТЕЛЬ НЕ ВЫБИРАЕТ: =====
 // ===== скин зашивается в ссылку при заказе (?skin=N); без него — сид от ссылки =====
 const SKINS = [
   {g:1,name:'Рассвет', empty:'#f6d9e6', ui:'#4a2b45', accent:'#f783ac', modal:'#3d2340', border:'#f783ac', btn:'#f783ac', btnText:'#fff', grad1:'#5a2a4a', grad2:'#2b1430'},
@@ -399,6 +407,17 @@ function genitive(s){
   if(/а$/.test(s)) return s.slice(0,-1)+(/[кгхжшчщ]$/.test(s.slice(-2,-1))?'и':'ы');
   if(/[^аеёиоуыэюя\s]$/.test(s)) return s+'а';
   return s;
+}
+
+// ===== Ранг: космонавт и академик — всегда мужской род; волшебник — по полу =====
+function rankText(){
+  if(CFG.theme==='magic'){
+    var g=(CFG.gender||'').toLowerCase();
+    if(g==='g'||g==='girl'||g==='f') return 'ЮНАЯ ВОЛШЕБНИЦА';
+    if(g==='b'||g==='boy'||g==='m') return 'ЮНЫЙ ВОЛШЕБНИК';
+    return 'ЮНАЯ ВОЛШЕБНИЦА / ЮНЫЙ ВОЛШЕБНИК';
+  }
+  return T.rank;
 }
 
 let world=[], inv={}, mission=0, slots=[null,null,null,null,null], pendingPraise=false, praiseDone=false;
@@ -564,6 +583,23 @@ function fitCanvas(){
   draw();
 }
 
+function spawnParticles(){
+  const box=document.getElementById('particles');
+  box.innerHTML='';
+  const chars=['✨','⭐','🌟'];
+  for(let i=0;i<14;i++){
+    const d=document.createElement('div');
+    d.className='particle';
+    d.textContent=chars[Math.floor(Math.random()*chars.length)];
+    d.style.left=(Math.random()*92+2)+'%';
+    d.style.top=(Math.random()*88+4)+'%';
+    d.style.fontSize=(14+Math.random()*14)+'px';
+    d.style.animationDelay=(Math.random()*3)+'s';
+    d.style.animationDuration=(3+Math.random()*3)+'s';
+    box.appendChild(d);
+  }
+}
+
 function init(){
   slots=[null,null,null,null,null];
   inv={};
@@ -571,8 +607,11 @@ function init(){
   pendingPraise=false;
   praiseDone=false;
   const title=T.titleTpl.replace('{name}',CFG.name);
+  document.getElementById('start').classList.add('bg-'+CFG.theme);
+  document.getElementById('fieldWrap').style.backgroundImage='url(\''+T.bg+'\')';
+  spawnParticles();
   document.getElementById('coverSub').textContent=title;
-  document.getElementById('coverRank').textContent='Уровень допуска: '+T.rank;
+  document.getElementById('coverRank').textContent='Уровень допуска: '+rankText();
   document.getElementById('coverGreet').textContent='Привет, '+CFG.name+'!';
   document.getElementById('coverEmblem').innerHTML=T.emblem;
   const fromG=genitive(CFG.from);
@@ -594,7 +633,7 @@ function init(){
   document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
   var ev=EVENTS[CFG.event]||EVENTS.default;
   document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
-  document.title='Элементкрафт v23 — '+title;
+  document.title='Элементкрафт v24 — '+title;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
@@ -605,10 +644,11 @@ function init(){
 function draw(){
   const k=cvs.width/320;
   ctx.setTransform(k,0,0,k,0,0);
+  ctx.globalAlpha=0.8;
   ctx.fillStyle=SKIN.empty; ctx.fillRect(0,0,320,320);
+  ctx.globalAlpha=1;
   const ht=getHintTarget();
   for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
-    ctx.fillStyle=SKIN.empty; ctx.fillRect(x*TILE,y*TILE,TILE,TILE);
     ctx.strokeStyle='#000'; ctx.lineWidth=1; ctx.strokeRect(x*TILE,y*TILE,TILE,TILE);
     if(world[y][x]){
       ctx.fillStyle=EL[world[y][x]];
@@ -616,10 +656,10 @@ function draw(){
       ctx.fillStyle='#000';
       ctx.textAlign='center'; ctx.textBaseline='middle';
       if(T.emojiTile){
-        ctx.font='18px '+FONT;
-        ctx.fillText(META[world[y][x]].e,x*TILE+TILE/2,y*TILE+16);
-        ctx.font='bold 10px '+FONT;
-        ctx.fillText(world[y][x],x*TILE+TILE/2,y*TILE+31);
+        ctx.font='17px '+FONT;
+        ctx.fillText(META[world[y][x]].e,x*TILE+TILE/2,y*TILE+15);
+        ctx.font='bold 9px '+FONT;
+        ctx.fillText(META[world[y][x]].ru,x*TILE+TILE/2,y*TILE+31);
       } else {
         ctx.font='bold 16px '+FONT;
         ctx.fillText(world[y][x],x*TILE+TILE/2,y*TILE+14);
@@ -671,7 +711,7 @@ function renderItems(containerId){
     d.className='item';
     d.dataset.sym=k;
     if(T.emojiTile){
-      d.innerHTML='<div style="font-size:18px;">'+META[k].e+'</div><small>'+k+' · '+v+'</small>';
+      d.innerHTML='<div style="font-size:18px;">'+META[k].e+'</div><small>'+META[k].ru+' · '+v+'</small>';
     } else {
       d.innerHTML='<b style="color:'+EL[k]+'; font-size:18px;">'+k+'</b> '+META[k].e+'<br><small>'+v+'</small>';
     }
@@ -734,7 +774,7 @@ document.getElementById('slots').addEventListener('click', function(e){
 
 function showInfo(sym){
   const m=META[sym];
-  document.getElementById('infoTitle').textContent=m.e+' '+sym+' — '+m.ru;
+  document.getElementById('infoTitle').textContent=T.emojiTile ? m.e+' '+m.ru : m.e+' '+sym+' — '+m.ru;
   document.getElementById('infoText').textContent=m.f;
   document.getElementById('infoModal').classList.remove('hidden');
   document.getElementById('infoModal').classList.add('show');
@@ -756,7 +796,11 @@ function closeHowto(){
 function openGallery(){
   let html='';
   for(const k of Object.keys(META)){
-    html+='<div class="elCard"><b style="font-size:20px;">'+META[k].e+' '+k+'</b> — '+META[k].ru+'<br><small>'+META[k].f+'</small></div>';
+    if(T.emojiTile){
+      html+='<div class="elCard"><b style="font-size:20px;">'+META[k].e+' '+META[k].ru+'</b><br><small>'+META[k].f+'</small></div>';
+    } else {
+      html+='<div class="elCard"><b style="font-size:20px;">'+META[k].e+' '+k+'</b> — '+META[k].ru+'<br><small>'+META[k].f+'</small></div>';
+    }
   }
   document.getElementById('galleryBody').innerHTML=html;
   document.getElementById('galleryModal').classList.remove('hidden');
@@ -880,7 +924,7 @@ function doCraft(){
       },1000);
     }
   } else {
-    showError('❌ Неправильная комбинация! Смотри подсказку выше.', '#e94560');
+    showError('❌ Не получилось! Правильно: '+recStr(rec), '#e94560');
     clearSlots();
   }
 }
@@ -888,6 +932,8 @@ function doCraft(){
 function drawMolecule(type, atoms){
   const container=document.getElementById('moleculeDisplay');
   container.innerHTML='';
+  const lab=function(e){ return T.emojiTile ? META[e].e : e; };
+  const lfs=T.emojiTile?16:18;
   if(type==='water'){
     const svg=`<svg width="200" height="150" viewBox="0 0 200 150">
       <line x1="60" y1="40" x2="100" y2="90" stroke="#fff" stroke-width="4"/>
@@ -932,6 +978,16 @@ function drawMolecule(type, atoms){
       <text x="210" y="55" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">${a[1]}</text>
     </svg>`;
     container.innerHTML=`<div class="molecule">${svg}</div>`;
+  } else if(type==='linear4'){
+    const a=atoms||['Ch','Z','K','L'];
+    const svg=`<svg width="260" height="100" viewBox="0 0 260 100">
+      ${a.map((e,i)=>`
+        <circle cx="${40+i*60}" cy="50" r="22" fill="${EL[e]}" stroke="#fff" stroke-width="3"/>
+        <text x="${40+i*60}" y="56" text-anchor="middle" fill="#000" font-size="${lfs}" font-weight="bold">${lab(e)}</text>
+        ${i<a.length-1?`<line x1="${40+i*60+22}" y1="50" x2="${40+(i+1)*60-22}" y2="50" stroke="#fff" stroke-width="4"/>`:''}
+      `).join('')}
+    </svg>`;
+    container.innerHTML=`<div class="molecule">${svg}</div>`;
   } else {
     const a=atoms||['Na','Cl'];
     const spacing=a.length===2?60:45;
@@ -939,7 +995,7 @@ function drawMolecule(type, atoms){
     const svg=`<svg width="200" height="100" viewBox="0 0 200 100">
       ${a.map((e,i)=>`
         <circle cx="${startX+i*spacing}" cy="50" r="25" fill="${EL[e]}" stroke="#fff" stroke-width="3"/>
-        <text x="${startX+i*spacing}" y="55" text-anchor="middle" fill="#000" font-size="18" font-weight="bold">${e}</text>
+        <text x="${startX+i*spacing}" y="56" text-anchor="middle" fill="#000" font-size="${T.emojiTile?lfs:18}" font-weight="bold">${lab(e)}</text>
         ${i<a.length-1?`<line x1="${startX+i*spacing+25}" y1="50" x2="${startX+(i+1)*spacing-25}" y2="50" stroke="#fff" stroke-width="4"/>`:''}
       `).join('')}
     </svg>`;
@@ -1000,7 +1056,7 @@ function showError(msg, color='#e94560'){
     toast.style.opacity='0';
     toast.style.transition='opacity 0.3s';
     setTimeout(()=>toast.remove(),300);
-  },2000);
+  },2500);
 }
 
 function launchRocket(){
