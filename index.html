@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Элементкрафт v24.1</title>
+<title>Элементкрафт v24.2</title>
 <style>
 :root { --ui:#16213e; --accent:#4ecca3; --modal-bg:#16213e; --modal-border:#4ecca3; --btn:#4ecca3; --btn-text:#1a1a2e; --grad1:#1a1a2e; --grad2:#16213e; }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -26,15 +26,19 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
 #particles { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
 .particle { position:absolute; animation:float 4s infinite ease-in-out; opacity:0.6; }
 @keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-20px) rotate(180deg); } }
-#cover { width:min(94%,440px); text-align:center; position:relative; z-index:1; }
-#coverEmblem { margin:0 auto 10px; }
-#coverTitle { font-size:38px; letter-spacing:4px; color:#fff; text-shadow:0 2px 20px rgba(0,0,0,0.9), 0 0 40px rgba(255,255,255,0.3); margin-bottom:6px; font-weight:bold; }
-#coverSub { font-size:22px; color:var(--accent); font-weight:bold; margin-bottom:10px; text-shadow:0 1px 10px rgba(0,0,0,0.9); }
-#coverRank { font-size:14px; color:#ddd; letter-spacing:2px; margin-bottom:14px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
-#coverFrom { font-size:18px; color:var(--accent); margin-bottom:10px; font-weight:bold; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
-#coverGreet { font-size:20px; margin-bottom:18px; text-shadow:0 1px 8px rgba(0,0,0,0.9); }
+#cover { width:min(94%,440px); text-align:center; position:relative; z-index:1; margin:0 auto; }
+#coverEmblem { margin:0 auto 10px; text-align:center; }
+#coverTitle { font-size:38px; letter-spacing:4px; color:#fff; text-shadow:0 2px 20px rgba(0,0,0,0.9), 0 0 40px rgba(255,255,255,0.3); margin-bottom:6px; font-weight:bold; text-align:center; width:100%; }
+#coverSub { font-size:22px; color:var(--accent); font-weight:bold; margin-bottom:10px; text-shadow:0 1px 10px rgba(0,0,0,0.9); text-align:center; }
+#coverRank { font-size:14px; color:#ddd; letter-spacing:2px; margin-bottom:14px; text-shadow:0 1px 8px rgba(0,0,0,0.9); text-align:center; }
+#coverFrom { font-size:18px; color:var(--accent); margin-bottom:10px; font-weight:bold; text-shadow:0 1px 8px rgba(0,0,0,0.9); text-align:center; }
+#coverGreet { font-size:20px; margin-bottom:18px; text-shadow:0 1px 8px rgba(0,0,0,0.9); text-align:center; }
 #cover button { font-size:18px; padding:12px; }
 #cover .ghost { background:transparent; color:var(--accent); border:2px solid var(--accent); }
+@media (max-width:480px) {
+  #coverTitle { font-size:28px; letter-spacing:2px; }
+  #coverSub { font-size:19px; }
+}
 .modal { background:var(--modal-bg); border:2px solid var(--modal-border); border-radius:12px; padding:14px; max-width:90%; width:350px; max-height:90%; overflow-y:auto; }
 .modal h2 { color:var(--accent); text-align:center; margin-bottom:10px; }
 .modal p { margin-bottom:6px; line-height:1.35; font-size:14px; }
@@ -74,6 +78,7 @@ button { width:100%; padding:8px; margin:3px 0; background:var(--btn); color:var
   #hotbar { flex-wrap:wrap; overflow-x:visible; }
   #craftHotbar { flex-wrap:wrap; overflow-x:visible; }
   .modal { width:420px; }
+  #start.bg-lab, #start.bg-space, #start.bg-magic { background-position:center 65%; }
 }
 body.desk #game { max-width:1000px; flex-direction:row; align-items:stretch; }
 body.desk #fieldWrap { flex:1 1 auto; padding:12px; }
@@ -87,7 +92,7 @@ body.desk #hintPointer { font-size:46px; }
 </head>
 <body>
 
-<div id="version">v24.1 · <span id="vw">-</span>px</div>
+<div id="version">v24.2 · <span id="vw">-</span>px</div>
 <button id="helpBtn" onclick="openGallery()">❓</button>
 
 <div id="game">
@@ -403,9 +408,21 @@ function genitive(s){
   return s;
 }
 
+// ===== Пол по имени (когда ?gender= не передан): словари частых детских имён =====
+const BOY_NAMES=['костя','миша','ваня','петя','серёжа','сережа','дима','артём','артем','макс','максим','никита','егор','даниил','даня','дан','тима','тимур','марк','лев','рома','роман','руслан','игорь','влад','владик','вова','володя','гриша','боря','юра','коля','витя','стёпа','степан','матвей','мирон','кирилл','глеб','илья','макар','платон','денис','антон','павел','паша','федя','ярик','ярослав','богдан','лука','филипп','захар','андрей','алексей','лёша','женя-м'];
+const GIRL_NAMES=['маша','мария','даша','дарья','катя','аня','анна','соня','софия','софья','алиса','вика','виктория','настя','анастасия','оля','ольга','лена','елена','света','наталья','наташа','таня','татьяна','ира','ирина','марина','юля','юлия','ксения','ксюша','полина','лиза','елизавета','вера','надя','люба','галя','мила','милана','ева','арина','варвара','василиса','кира','лада','лера','валерия','маргарита','рита','таисия','ульяна','яна','алина','кристина','жанна'];
+function guessGender(){
+  var raw=(CFG.name||'').trim().toLowerCase().split(/\s+/)[0];
+  raw=raw.replace(/[^а-яё-]/g,'');
+  if(BOY_NAMES.indexOf(raw)>=0) return 'b';
+  if(GIRL_NAMES.indexOf(raw)>=0) return 'g';
+  return '';
+}
+
 function rankText(){
   if(CFG.theme==='magic'){
     var g=(CFG.gender||'').toLowerCase();
+    if(!(g==='g'||g==='girl'||g==='f'||g==='b'||g==='boy'||g==='m')) g=guessGender();
     if(g==='g'||g==='girl'||g==='f') return 'ЮНАЯ ВОЛШЕБНИЦА';
     if(g==='b'||g==='boy'||g==='m') return 'ЮНЫЙ ВОЛШЕБНИК';
     return 'ЮНАЯ ВОЛШЕБНИЦА / ЮНЫЙ ВОЛШЕБНИК';
@@ -626,7 +643,7 @@ function init(){
   document.getElementById('finalLine').textContent=CFG.name+', ты выполнил все миссии и запустил ракету!';
   var ev=EVENTS[CFG.event]||EVENTS.default;
   document.getElementById('finalReward').textContent=ev.emoji+' В награду ты получаешь поздравление '+ev.label+'!';
-  document.title='Элементкрафт v24.1 — '+title;
+  document.title='Элементкрафт v24.2 — '+title;
   createFreshWorld(0);
   ensureMissionElements();
   renderHot();
